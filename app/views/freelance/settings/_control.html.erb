@@ -1,0 +1,26 @@
+<h3>Настройка</h3>
+
+<div id="sunstrike_settnigs_div">
+  <div>
+    <div id="sunstrike_settnigs_title">
+      автоматизировать выбор настраиваемого поля “Делает фрилансер” в зависимости от роли пользователя
+    </div>
+    <div id="sunstrike_settnigs_select">
+
+      <%= select_tag('settings[sunstrike_freelance_auto_select]',
+                     options_for_select(ON_OFF_CONST,
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'].to_i)) %>
+    </div>
+  </div>
+  <div>
+    <h4 id="sunstrike_settnigs_h4">Описание: </h4>
+    Параметр “Делает фрилансер” автоматически переводился на “Да” в том случае, если тикет назначен на пользователя с одной из этих ролей
+  </div>
+</div>
+
+
+
+<div>
+  <%= Setting.plugin_custom_improvements %>
+</div>
+

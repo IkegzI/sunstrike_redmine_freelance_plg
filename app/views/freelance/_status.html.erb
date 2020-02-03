@@ -1,0 +1,21 @@
+
+<% if Setting.plugin_custom_improvements['improvements_disable_status'] == 0 %>
+<script type="text/javascript">
+    $(document).ready(function () {
+            document.getElementsByName('commit')[1].setAttribute('onmouseenter', 'status_edit()');
+            if (document.getElementById('issue_status_id').firstChild.hasAttribute('selected')) {
+                document.getElementById('issue_status_id').setAttribute('flag', 'change');
+            }
+        }
+    );
+    function status_edit() {
+        if (document.getElementById('time_entry_activity_id').value != "" ) {
+            if (document.getElementById('time_entry_hours').value != "") {
+                if (document.getElementById('issue_status_id').hasAttribute('flag')) {
+                    document.getElementById('issue_status_id').selectedIndex = 1;
+                }
+            }
+        }
+    }
+</script>
+<% end %>

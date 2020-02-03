@@ -1,0 +1,5 @@
+ru:
+  label_settings_control: "Управление модулями"
+  activerecord:
+      messages:
+        record_invalid: 'Возникли ошибки: %{errors}'

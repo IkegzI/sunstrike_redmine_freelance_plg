@@ -1,0 +1,2 @@
+Для работы плагина необходим плагин: SunStrike Redmine Quick AddUsers
+
