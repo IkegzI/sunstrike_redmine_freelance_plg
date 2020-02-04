@@ -79,20 +79,32 @@
               // document.getElementById(number_field).setAttribute('disabled', 'true');
               if (document.getElementById(number_field).tagName != "SELECT") {
                   document.getElementById(number_field).setAttribute('readonly', 'readonly');
-                  if (document.getElementById(number_field).value == '') {
-                      ans += 1;
+                  console.log('dfket ' + document.getElementById(number_field).value);
+                  switch (document.getElementById(number_field).value) {
+                      case '':
+                          ans += 1;
+                          console.log('ans ' + ans);
+                      case ' ':
+                          ans += 1;
+                          console.log('ans ' + ans);
+                      case '0':
+                          ans += 1;
+                          console.log('ans ' + ans);
                   }
-                  if (document.getElementById(number_field).value == ' ') {
-                      ans += 1;
-                  }
-                  if (document.getElementById(number_field).value == '0') {
-                      ans += 1;
-                  }
+
+                  //
+                  // if (document.getElementById(number_field).value == '') {
+                  //
+                  // }
+                  // if (document.getElementById(number_field).value == ' ') {
+                  //
+                  // }
+                  // if (document.getElementById(number_field).value == '0') {
+                  //     a
+                  // }
               }
               document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
               document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
-              console.log(ans);
-
               if (document.getElementById(number_field).tagName == "SELECT") {
                   if (document.getElementById(number_field).selectedIndex == 0) {
                       ans += 1;
@@ -118,6 +130,7 @@
               document.getElementById(number_field).removeAttribute('disabled');
               <% end %>
           }
+          console.log('ans ' + ans)
           console.log(fl < 2)
           if (fl < 2) {
               answer_frelance(ans, key_value)
@@ -127,9 +140,11 @@
       function answer_frelance(ans, key_value) {
           console.log('привет');
           var if_item = Number.parseInt(<%= SsrFreelanceHelper.mark_custom_field_freelance.size %>);
-          if (ans > 0) {
-              alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
-              document.getElementById(key_value).selectedIndex = 0;
+          if (ans < 3) {
+              if (document.getElementById(key_value).selectedIndex != 0) {
+                  alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
+                  document.getElementById(key_value).selectedIndex = 0;
+              }
           }
           status_edit(5);
       }
