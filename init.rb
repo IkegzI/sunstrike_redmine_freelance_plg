@@ -1,4 +1,3 @@
-require 'redmine'
 require_dependency 'ssr_freelance'
 
 Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
