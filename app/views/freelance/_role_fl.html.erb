@@ -70,7 +70,7 @@
 
       function status_edit(fl) {
           var ans = 0;
-          var number_field = ''
+          var number_field = '';
           var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
 
           if (document.getElementById(key_value).selectedIndex == 1) {
@@ -108,7 +108,6 @@
               if (document.getElementById(number_field).tagName == "SELECT") {
                   if (document.getElementById(number_field).selectedIndex == 0) {
                       ans += 1;
-                      console.log(ans + ' select');
                   }
                   document.getElementById(number_field).disable = true;
                   // document.getElementById(number_field).setAttribute('onchange', 'alert_error_edit()');
@@ -116,7 +115,7 @@
 
               }
 
-              document.getElementById(number_field).options == true
+              document.getElementById(number_field).options == true;
               <% end %>
           }
           if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 0) {
@@ -130,8 +129,8 @@
               document.getElementById(number_field).removeAttribute('disabled');
               <% end %>
           }
-          console.log('ans ' + ans)
-          console.log(fl < 2)
+          console.log('ans ' + ans);
+          console.log(fl < 2);
           if (fl < 2) {
               answer_frelance(ans, key_value)
           }
@@ -141,6 +140,7 @@
           console.log('привет');
           var if_item = Number.parseInt(<%= SsrFreelanceHelper.mark_custom_field_freelance.size %>);
           if (ans < 3) {
+              console.log(key_value);
               console.log(document.getElementById(key_value).selectedIndex);
               if (document.getElementById(key_value).selectedIndex != 0) {
                   alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
