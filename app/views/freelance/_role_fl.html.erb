@@ -5,7 +5,7 @@
               var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
               elem.setAttribute('onchange', 'status_edit()');
               if (elem.selectedIndex == 1) {
-                  <% mark_custom_field_freelance.each do |item| %>
+                  <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
                   var number_field = 'issue_custom_field_values_<%= item.last%>';
                   document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
                   document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
@@ -74,7 +74,7 @@
           var number_field = ''
           var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
           if (document.getElementById(key_value).selectedIndex == 1) {
-              <% mark_custom_field_freelance.each do |item| %>
+              <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
               number_field = 'issue_custom_field_values_<%= item.last %>';
               // document.getElementById(number_field).setAttribute('disabled', 'true');
               if (document.getElementById(number_field).tagName != "SELECT") {
@@ -114,7 +114,7 @@
               <% end %>
           }
           if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 0) {
-              <% mark_custom_field_freelance.each do |item| %>
+              <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
               number_field = 'issue_custom_field_values_<%= item.last %>';
               // document.getElementById(number_field).removeAttribute('disabled');
               document.getElementById(number_field).removeAttribute('onclick');
@@ -130,7 +130,7 @@
       }
 
       function answer_frelance(ans, key_value) {
-          var if_item = Number.parseInt(<%= mark_custom_field_freelance.size %>);
+          var if_item = Number.parseInt(<%= SsrFreelanceHelper.mark_custom_field_freelance.size %>);
           console.log(if_item);
           console.log(ans + 'ans');
           if (ans > 0) {

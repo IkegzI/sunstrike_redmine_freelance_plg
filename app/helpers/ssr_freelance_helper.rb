@@ -41,6 +41,17 @@ module SsrFreelanceHelper
   def setting_role_users_size
   end
 
+  def self.mark_custom_field_freelance
+    a = []
+    SsrFreelanceFields.all.each do |fild|
+      unless fild.field_id.nil?
+        item = IssueCustomField.find(fild.field_id)
+        a << [item.name, item.id]
+      end
+    end
+    a.compact
+  end
+
 end
 
 

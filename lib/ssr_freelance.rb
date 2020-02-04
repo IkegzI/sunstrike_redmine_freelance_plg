@@ -5,10 +5,6 @@ require_dependency 'patches/issues_controller_patch'
 module SsrFreelance
 
 
-  class << self
-
-  end
-
 
 
 end
