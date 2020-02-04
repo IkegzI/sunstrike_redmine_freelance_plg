@@ -22,3 +22,4 @@
 settings:
   yml:
     sunstrike_freelance_auto_select: 0
+    sunstrike_freelance_field_id: 0

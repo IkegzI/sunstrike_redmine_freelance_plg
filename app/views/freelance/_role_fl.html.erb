@@ -1,0 +1,156 @@
+<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' %>
+  <script type="text/javascript">
+      $(document).ready(function () {
+              document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
+              var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
+              elem.setAttribute('onchange', 'status_edit()');
+              if (elem.selectedIndex == 1) {
+                  <% mark_custom_field_freelance.each do |item| %>
+                  var number_field = 'issue_custom_field_values_<%= item.last%>';
+                  document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
+                  document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
+                  if (document.getElementById(number_field).tagName != "SELECT") {
+                      document.getElementById(number_field).setAttribute('readonly', 'readonly');
+                  }
+                  if (document.getElementById(number_field).tagName == "SELECT") {
+                      document.getElementById(number_field).setAttribute('onchange', 'error_edit_select(' + number_field + ')');
+                      // document.getElementById(number_field).disabled = true;
+                  }
+                  <% end %>
+              }
+              var atr = document.getElementById('issue_assigned_to_id').value;
+              $.ajax({
+                  type: 'GET',
+                  url: "/ssrfreelance/check/" + atr,
+                  cache: false,
+                  success: function (data) {
+                      var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                      number_field = 'issue_custom_field_values_' + number_field;
+                      if (data == 'true') {
+                          document.getElementById(number_field).selectedIndex = 0;
+                          document.getElementById(number_field).disabled = true;
+                          status_edit();
+                      } else {
+                          document.getElementById(number_field).disabled = false;
+                          document.getElementById(number_field).selectedIndex = 1;
+
+                          status_edit(0);
+                      }
+                  }
+              });
+          }
+      );
+
+      function check_db_user(atr) {
+          $.ajax({
+              type: 'GET',
+              url: "/ssrfreelance/check/" + atr,
+              cache: false,
+              success: function (data) {
+                  var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                  number_field = 'issue_custom_field_values_' + number_field;
+                  if (data == 'true') {
+                      document.getElementById(number_field).selectedIndex = 0;
+                      document.getElementById(number_field).disabled = true;
+                      status_edit(0);
+                  } else {
+                      document.getElementById(number_field).disabled = false;
+                      document.getElementById(number_field).selectedIndex = 1;
+
+                      status_edit(0);
+                  }
+              }
+          });
+      }
+
+      function role_right() {
+          var atr = document.getElementById('issue_assigned_to_id').value;
+          check_db_user(atr);
+      }
+
+      function status_edit(fl) {
+          var flag = fl;
+          var ans = 0;
+          var number_field = ''
+          var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
+          if (document.getElementById(key_value).selectedIndex == 1) {
+              <% mark_custom_field_freelance.each do |item| %>
+              number_field = 'issue_custom_field_values_<%= item.last %>';
+              // document.getElementById(number_field).setAttribute('disabled', 'true');
+              if (document.getElementById(number_field).tagName != "SELECT") {
+                  document.getElementById(number_field).setAttribute('readonly', 'readonly');
+                  if (document.getElementById(number_field).value == '') {
+                      ans += 1;
+                      console.log(ans + '|');
+                  }
+                  if (document.getElementById(number_field).value == ' ') {
+                      ans += 1;
+                      console.log(ans + ' __');
+
+                  }
+                  if (document.getElementById(number_field).value == '0') {
+                      ans += 1;
+                      console.log(ans + '0');
+
+                  }
+              }
+              document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
+              document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
+              console.log(ans);
+
+              if (document.getElementById(number_field).tagName == "SELECT") {
+                  if (document.getElementById(number_field).selectedIndex == 0) {
+                      ans += 1;
+                      console.log(ans + 'select');
+
+                  }
+                  document.getElementById(number_field).disable = true;
+                  // document.getElementById(number_field).setAttribute('onchange', 'alert_error_edit()');
+                  document.getElementById(number_field).setAttribute('onchange', 'error_edit_select(' + number_field + ')');
+
+              }
+
+              document.getElementById(number_field).options == true
+              <% end %>
+          }
+          if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 0) {
+              <% mark_custom_field_freelance.each do |item| %>
+              number_field = 'issue_custom_field_values_<%= item.last %>';
+              // document.getElementById(number_field).removeAttribute('disabled');
+              document.getElementById(number_field).removeAttribute('onclick');
+              document.getElementById(number_field).removeAttribute('onchange');
+              document.getElementById(number_field).removeAttribute('onkeypress');
+              document.getElementById(number_field).removeAttribute('readonly');
+              document.getElementById(number_field).removeAttribute('disabled');
+              <% end %>
+          }
+          if (flag < 1) {
+              answer_frelance(ans, key_value)
+          }
+      }
+
+      function answer_frelance(ans, key_value) {
+          var if_item = Number.parseInt(<%= mark_custom_field_freelance.size %>);
+          console.log(if_item);
+          console.log(ans + 'ans');
+          if (ans > 0) {
+              alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
+              console.log(key_value);
+              console.log(ans);
+              document.getElementById(key_value).selectedIndex = 0;
+          }
+          status_edit(5);
+      }
+
+      function alert_error_edit() {
+          alert("Ошибка! Нельзя вносить данные, если в поле 'Делает фрилансер?' выбрано 'Нет'");
+      }
+
+      function error_edit_select(number_field) {
+          number_field.value = 0;
+          alert_error_edit();
+      }
+
+
+  </script>
+<% end %>

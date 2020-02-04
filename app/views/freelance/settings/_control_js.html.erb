@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+            document.getElementById('role_add_to_freelance').setAttribute(
+                'href', '/ssrfreelance/add/' + document.getElementById('settings_sunstrike_freelance_role_id').value
+            );
+        document.getElementById('settings_sunstrike_freelance_role_id').setAttribute('onchange', 'add_role()');
+
+        document.getElementById('field_add_to_freelance').setAttribute(
+            'href', '/ssrfreelance/addfields/' + document.getElementById('settings_sunstrike_freelance_error_field_id').value
+        );
+            document.getElementById('settings_sunstrike_freelance_error_field_id').setAttribute('onchange', 'add_field()');
+
+
+
+        }
+    )
+
+    function add_role() {
+        document.getElementById('role_add_to_freelance').setAttribute(
+            'href', '/ssrfreelance/add/' + document.getElementById('settings_sunstrike_freelance_role_id').value
+        );
+    }
+
+    function add_field() {
+        document.getElementById('field_add_to_freelance').setAttribute(
+            'href', '/ssrfreelance/addfields/' + document.getElementById('settings_sunstrike_freelance_error_field_id').value);
+    }
+
+</script>
+
+settings_sunstrike_freelance_error_field_id

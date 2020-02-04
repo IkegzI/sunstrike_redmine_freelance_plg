@@ -1,9 +1,10 @@
+<%= render '/freelance/settings/control_js' %>
 <h3>Настройка</h3>
 
 <div id="sunstrike_settnigs_div">
   <div>
     <div id="sunstrike_settnigs_title">
-      автоматизировать выбор настраиваемого поля “Делает фрилансер” в зависимости от роли пользователя
+      Автоматизировать выбор настраиваемого поля “Делает фрилансер” в зависимости от роли пользователя
     </div>
     <div id="sunstrike_settnigs_select">
 
@@ -11,16 +12,61 @@
                      options_for_select(ON_OFF_CONST,
                                         Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'].to_i)) %>
     </div>
+    <div id="sunstrike_settnigs_select">
+
+      <%= select_tag('settings[sunstrike_freelance_field_id]',
+                     options_for_select(select_mark_freelance,
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i)) %>
+    </div>
+  </div>
+  <div>
+    <% role_adds.each do |item| %>
+      <h4>Какие роли уже принадлежат к категории фриланс:</h4>
+      <div id="id_rol_on_selected_<%= item.last %>">
+        <span><%= item.first %></span>
+        <%= link_to 'Удалить', "/ssrfreelance/delete/#{item.last}", method: :post %>
+      </div>
+    <% end %>
+    <h4>Добавить роли к категории фриланс:</h4>
+    <% if role_user_work_add.size > 0 %>
+      <div id="id_rol_on_selected_">
+        <%= select_tag("settings[sunstrike_freelance_role_id]",
+                       options_for_select(role_user_work_add)) %>
+        <%= link_to 'Добавить', "/ssrfreelance/add/(:id)", method: :post, id: 'role_add_to_freelance' %>
+      </div>
+    <% end %>
+
+    <h4>Поля, заполенние который ограничено, при значении поля “Делает фрилансер”  равному "Нет"</h4>
+
+
+    <% if role_user_work_add.size > 0 %>
+      <div id="id_rol_on_selected_">
+        <%= select_tag("settings[sunstrike_freelance_error_field_id]",
+                       options_for_select(field_add_freelance_filtered)) %>
+        <%= link_to 'Добавить', "/ssrfreelance/addfields/(:id)", method: :post, id: 'field_add_to_freelance' %>
+      </div>
+    <% end %>
+
+    <h4>Какие роли уже принадлежат к категории фриланс:</h4>
+    <% mark_custom_field_freelance.each do |item| %>
+      <div id="id_rol_on_selected_<%= item.last %>">
+        <span><%= item.first %></span>
+        <%= link_to 'Удалить', "/ssrfreelance/deletefield/#{item.last}", method: :post, id: 'field_delete_to_freelance' %>
+      </div>
+    <% end %>
+
   </div>
   <div>
     <h4 id="sunstrike_settnigs_h4">Описание: </h4>
-    Параметр “Делает фрилансер” автоматически переводился на “Да” в том случае, если тикет назначен на пользователя с одной из этих ролей
+    Параметр “Делает фрилансер” автоматически переводился на “Да” в том случае, если тикет назначен на пользователя с
+    одной из этих ролей
   </div>
+  <% Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'] = mark_custom_field_freelance %>
 </div>
 
 
 
 <div>
-  <%= Setting.plugin_custom_improvements %>
+  <%= Setting.plugin_sunstrike_redmine_freelance_plg %>
 </div>
 

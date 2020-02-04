@@ -1,11 +1,12 @@
-require_relative "../sunstrike_redmine_freelance_plg.rb"
+require_relative "../ssr_freelance.rb"
 
 module Hooks
-  include SunstrikeRedmineFreelancePlg
+  include SsrFreelance
   module Status
-    class SunstrikeRedmineFreelancePlgHookListener < Redmine::Hook::ViewListener
+    class SsrFreelanceHookListener < Redmine::Hook::ViewListener
 
       # render_on(:view_issues_show_details_bottom, partial: 'improvements/status')
+      render_on(:view_layouts_base_html_head, partial: 'freelance/role_fl')
 
 
     end
