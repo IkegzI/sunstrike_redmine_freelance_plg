@@ -8,8 +8,5 @@ require_relative '../app/models/ssr_freelance_fields'
 require_relative '../app/models/ssr_freelance_setting'
 
 module SsrFreelance
-
-
-
-
+  
 end

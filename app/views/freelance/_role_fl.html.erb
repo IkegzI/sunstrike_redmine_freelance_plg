@@ -3,7 +3,7 @@
       $(document).ready(function () {
               document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
               var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
-              elem.setAttribute('onchange', 'status_edit()');
+              elem.setAttribute('onchange', 'status_edit(1)');
               if (elem.selectedIndex == 1) {
                   <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
                   var number_field = 'issue_custom_field_values_<%= item.last%>';
@@ -29,7 +29,7 @@
                       if (data == 'true') {
                           document.getElementById(number_field).selectedIndex = 0;
                           document.getElementById(number_field).disabled = true;
-                          status_edit();
+                          status_edit(1);
                       } else {
                           document.getElementById(number_field).disabled = false;
                           document.getElementById(number_field).selectedIndex = 1;
@@ -69,10 +69,10 @@
       }
 
       function status_edit(fl) {
-          var flag = fl;
           var ans = 0;
           var number_field = ''
           var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
+
           if (document.getElementById(key_value).selectedIndex == 1) {
               <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
               number_field = 'issue_custom_field_values_<%= item.last %>';
@@ -81,17 +81,12 @@
                   document.getElementById(number_field).setAttribute('readonly', 'readonly');
                   if (document.getElementById(number_field).value == '') {
                       ans += 1;
-                      console.log(ans + '|');
                   }
                   if (document.getElementById(number_field).value == ' ') {
                       ans += 1;
-                      console.log(ans + ' __');
-
                   }
                   if (document.getElementById(number_field).value == '0') {
                       ans += 1;
-                      console.log(ans + '0');
-
                   }
               }
               document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
@@ -101,8 +96,7 @@
               if (document.getElementById(number_field).tagName == "SELECT") {
                   if (document.getElementById(number_field).selectedIndex == 0) {
                       ans += 1;
-                      console.log(ans + 'select');
-
+                      console.log(ans + ' select');
                   }
                   document.getElementById(number_field).disable = true;
                   // document.getElementById(number_field).setAttribute('onchange', 'alert_error_edit()');
@@ -124,19 +118,17 @@
               document.getElementById(number_field).removeAttribute('disabled');
               <% end %>
           }
-          if (flag < 1) {
+          console.log(fl < 2)
+          if (fl < 2) {
               answer_frelance(ans, key_value)
           }
       }
 
       function answer_frelance(ans, key_value) {
+          console.log('привет');
           var if_item = Number.parseInt(<%= SsrFreelanceHelper.mark_custom_field_freelance.size %>);
-          console.log(if_item);
-          console.log(ans + 'ans');
           if (ans > 0) {
               alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
-              console.log(key_value);
-              console.log(ans);
               document.getElementById(key_value).selectedIndex = 0;
           }
           status_edit(5);
