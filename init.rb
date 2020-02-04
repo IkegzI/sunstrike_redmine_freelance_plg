@@ -24,4 +24,4 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
     SettingsController.send :include, Patches::SettingsControllerPatch
     #
 end
-end 
+end

@@ -1,7 +1,6 @@
 require_relative "../ssr_freelance.rb"
 
 module Hooks
-  include SsrFreelance
   module Status
     class SsrFreelanceHookListener < Redmine::Hook::ViewListener
 
