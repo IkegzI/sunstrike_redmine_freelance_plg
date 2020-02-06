@@ -48,8 +48,8 @@ class SsrFreelanceController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {
-        render json: a.to_json, status: 201
+      format.html {
+        render json: a.to_json
       }
     end
   end
