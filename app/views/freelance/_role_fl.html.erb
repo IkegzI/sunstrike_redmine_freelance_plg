@@ -1,5 +1,6 @@
 <% SsrFreelancePayHelper.check_field_on_pay %>
-<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and request.url.split("/")[-2] == 'issues' %>
+<% binding.pry %>
+<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and (request.url.split("/")[-2] == 'issues' or request.url.split("/")[-1] == 'issues') %>
   <script type="text/javascript">
       $(document).ready(function () {
               document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
@@ -151,10 +152,10 @@
           if (document.getElementById(number_field).selectedIndex == 0) {
               ans += 1;
           }
-          if (document.getElementById(number_field).tagName != 'SELECT')
+          if (document.getElementById(number_field).tagName != 'SELECT'){
           if (document.getElementById(number_field).value == '') {
               ans += 1;
-          }
+          }}
           <% end %>
           if (ans >= <%= SsrFreelanceHelper.mark_custom_field_freelance.size %>) {
               return true;
