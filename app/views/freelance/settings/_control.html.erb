@@ -3,7 +3,7 @@
 
 <div id="sunstrike_settnigs_div">
   <div>
-    <h4>Поля, которые будут относится к категории Freelance</h4>
+    <h4>Поля, которые будут относится к категории Фриланс</h4>
 
 
     <% if role_user_work_add.size > 0 %>
@@ -14,7 +14,7 @@
       </div>
     <% end %>
 
-    <h4>Какие роли уже принадлежат к категории фриланс:</h4>
+    <h4>Поля, которые относятся к категории Фриланс:</h4>
     <% mark_custom_field_freelance.each do |item| %>
       <div id="id_rol_on_selected_<%= item.last %>">
         <span><%= item.first %></span>
@@ -27,7 +27,7 @@
 <div id="sunstrike_settnigs_div">
   <div>
     <div id="sunstrike_settnigs_title">
-      Автоматизировать выбор настраиваемого поля “Делает фрилансер” в зависимости от роли пользователя
+      Поле, по которому понимаем, что это Фриланс
     </div>
     <div id="sunstrike_settnigs_select">
 
@@ -53,19 +53,14 @@
       </div>
     <% end %>
 
+    <div>Какие роли уже принадлежат к категории фриланс:</div>
     <% role_adds.each do |item| %>
-      <div>Какие роли уже принадлежат к категории фриланс:</div>
       <div id="id_rol_on_selected_<%= item.last %>">
         <span><%= item.first %></span>
         <%= link_to 'Удалить', "/ssrfreelance/delete/#{item.last}", method: :post %>
       </div>
     <% end %>
 
-  </div>
-  <div>
-    <h4 id="sunstrike_settnigs_h4">Описание: </h4>
-    Параметр “Делает фрилансер” автоматически переводился на “Да” в том случае, если тикет назначен на пользователя
-    с одной из этих ролей
   </div>
   <% Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'] = mark_custom_field_freelance unless mark_custom_field_freelance == [] %>
 </div>
