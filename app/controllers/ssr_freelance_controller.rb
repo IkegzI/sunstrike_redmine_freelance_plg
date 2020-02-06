@@ -1,7 +1,6 @@
 class SsrFreelanceController < ApplicationController
 
 
-
   def delete
     a = SsrFreelanceSetting.find_by(role_id: request.url.split("/").last.to_i)
     if a
@@ -16,16 +15,42 @@ class SsrFreelanceController < ApplicationController
   end
 
   def user_role_freelance?
-    user = User.find(request.url.split('/').last.split('?').first.to_i).id
-    a = SsDefaultUserRole.find_by(user_id: user)
-    unless a.nil?
-      a = SsrFreelanceSetting.find_by(role_id: a.role_id)
+    param = request.url.split('/').last.split('?').first.to_i
+    if param > 0
+      user = User.find(request.url.split('/').last.split('?').first.to_i).id
+      a = SsDefaultUserRole.find_by(user_id: user)
+      unless a.nil?
+        a = SsrFreelanceSetting.find_by(role_id: a.role_id)
+      end
     end
     respond_to do |format|
       format.html {
         render text: a.nil? ? 'false' : 'true'
       }
     end
+  end
+
+  def user_pay_freelance
+    param = request.url.split('/').last.split('?').first.to_i
+    custom_field_wallet_id = UserCustomField.find_by(name: "Номер карты/кошелька/телефона").id
+    custom_field_type_id = UserCustomField.find_by(name: "Способ оплаты фрилансеру").id
+    custom_field_wallet_issue_id = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона").id
+    custom_field_type_issue_id = IssueCustomField.find_by(name: "Способ оплаты фрилансеру").id
+    begin
+      if param > 0
+        user = User.find(param)
+        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet_id).value
+        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type_id).value
+        a = {number: custom_field_wallet_issue_id, value: user_pay_wallet || 0}, {number: custom_field_type_issue_id, value: user_pay_type || 0}
+      end
+    rescue
+      a = {number: custom_field_wallet_issue_id, value: user_pay_wallet || ''}, {number: custom_field_type_issue_id, value: user_pay_type || 0}
+      end
+      respond_to do |format|
+        format.html {
+          render json: a
+        }
+      end
   end
 
   def addfield

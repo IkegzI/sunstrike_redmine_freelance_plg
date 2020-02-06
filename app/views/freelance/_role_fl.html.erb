@@ -1,7 +1,11 @@
-<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' %>
+<% SsrFreelancePayHelper.check_field_on_pay %>
+<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and request.url.split("/")[-2] == 'issues' %>
   <script type="text/javascript">
       $(document).ready(function () {
               document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
+              if (document.getElementById('issue_assigned_to_id') != '') {
+                  pay_info();
+              }
               var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
               elem.setAttribute('onchange', 'status_edit()');
               if (elem.selectedIndex == 1) {
@@ -14,7 +18,6 @@
                   }
                   if (document.getElementById(number_field).tagName == "SELECT") {
                       document.getElementById(number_field).setAttribute('onchange', 'error_edit_select(' + number_field + ')');
-                      // document.getElementById(number_field).disabled = true;
                   }
                   <% end %>
               }
@@ -71,6 +74,8 @@
                   }
               }
           });
+          pay_info();
+
       }
 
 
@@ -83,46 +88,49 @@
 
           var number_field = '';
           var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
-
+          var selected_field = '';
 
           if (document.getElementById(key_value).selectedIndex == 1) {
 
               if (field_check_for_data()) {
                   <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
                   number_field = 'issue_custom_field_values_<%= item.last %>';
-
-                  if (document.getElementById(number_field).tagName != "SELECT") {
-                      document.getElementById(number_field).setAttribute('readonly', 'readonly');
+                  selected_field = document.getElementById(number_field);
+                  if (selected_field.tagName != "SELECT") {
+                      selected_field.value = 0;
+                      selected_field.setAttribute('readonly', 'readonly');
                   }
-                  document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
-                  document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
-                  if (document.getElementById(number_field).tagName == "SELECT") {
-                      document.getElementById(number_field).disable = true;
-                      document.getElementById(number_field).setAttribute('onchange', 'error_edit_select(' + number_field + ')');
+                  selected_field.setAttribute('onclick', 'alert_error_edit()');
+                  selected_field.setAttribute('onkeypress', 'alert_error_edit()');
+                  if (selected_field.tagName == "SELECT") {
+                      selected_field.disable = true;
+                      selected_field.setAttribute('onchange', 'error_edit_select(' + number_field + ')');
                   }
-                  document.getElementById(number_field).options == true;
+                  selected_field.options == true;
                   <% end %>
               } else {
-                  document.getElementById(key_value).selectedIndex = 0;
                   alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
+                  document.getElementById(key_value).selectedIndex = 0;
               }
+              pay_info();
           }
 
 
           if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 0) {
               <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
               number_field = 'issue_custom_field_values_<%= item.last %>';
-              document.getElementById(number_field).removeAttribute('onclick');
-              document.getElementById(number_field).removeAttribute('onchange');
-              document.getElementById(number_field).removeAttribute('onkeypress');
-              document.getElementById(number_field).removeAttribute('readonly');
-              document.getElementById(number_field).removeAttribute('disabled');
+              selected_field = document.getElementById(number_field);
+              selected_field.removeAttribute('onclick');
+              selected_field.removeAttribute('onchange');
+              selected_field.removeAttribute('onkeypress');
+              selected_field.removeAttribute('readonly');
+              selected_field.removeAttribute('disabled');
               <% end %>
           }
       }
 
       function alert_error_edit() {
-          alert("Ошибка! Нельзя вносить данные, если в поле 'Делает фрилансер?' выбрано 'Нет'");
+          alert("Задачу делает фрилансер? Чтобы заполнить данное поле, выставите параметр “Делает фрилансер” на “Да”");
       }
 
       function error_edit_select(number_field) {
@@ -133,32 +141,40 @@
       }
 
       function field_check_for_data() {
-          var ans = 0
+          var ans = 0;
+
           <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
-          number_field = 'issue_custom_field_values_' + <%= item.last %>
-
-          if (document.getElementById(number_field).value == ' ') {
-              ans += 1;
-          }
-          if (document.getElementById(number_field).value == '') {
-              ans += 1;
-          }
-          if (document.getElementById(number_field).value == '0') {
-              ans += 1;
-          }
-
-          if (document.getElementById(number_field).value == '<empty string>') {
+          number_field = 'issue_custom_field_values_' + <%= item.last %>;
+          if (Number.parseInt(document.getElementById(number_field).value) < 1) {
               ans += 1;
           }
           if (document.getElementById(number_field).selectedIndex == 0) {
               ans += 1;
           }
+          if (document.getElementById(number_field).tagName != 'SELECT')
+          if (document.getElementById(number_field).value == '') {
+              ans += 1;
+          }
           <% end %>
-
           if (ans >= <%= SsrFreelanceHelper.mark_custom_field_freelance.size %>) {
               return true;
           } else {
               return false;
+          }
+      }
+
+      function pay_info() {
+          if (document.getElementById('issue_assigned_to_id').value) {
+              $.ajax({
+                  type: 'GET',
+                  url: "/ssrfreelance/check_pay/" + document.getElementById('issue_assigned_to_id').value,
+                  cache: false,
+                  success: function (data) {
+                      var answer = JSON.parse(data);
+                      document.getElementById('issue_custom_field_values_' + answer[0]['number']).value = answer[0]['value'];
+                      document.getElementById('issue_custom_field_values_' + answer[1]['number']).value = answer[1]['value'];
+                  }
+              });
           }
       }
   </script>

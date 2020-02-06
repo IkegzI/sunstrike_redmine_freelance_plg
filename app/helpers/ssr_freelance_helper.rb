@@ -24,8 +24,8 @@ module SsrFreelanceHelper
   def mark_custom_field_freelance
     a = []
     SsrFreelanceFields.all.each do |fild|
-      unless fild.field_id.nil?
-        item = IssueCustomField.find(fild.field_id)
+      unless fild.field_id.nil? or fild.field_id  == 0
+        item = IssueCustomField.find(fild.field_id.to_i)
         a << [item.name, item.id]
       end
     end
@@ -44,7 +44,7 @@ module SsrFreelanceHelper
   def self.mark_custom_field_freelance
     a = []
     SsrFreelanceFields.all.each do |fild|
-      unless fild.field_id.nil?
+      unless fild.field_id.nil? or fild.field_id  == 0
         item = IssueCustomField.find(fild.field_id)
         a << [item.name, item.id]
       end
