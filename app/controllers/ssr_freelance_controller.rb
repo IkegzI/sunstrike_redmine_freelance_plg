@@ -36,6 +36,7 @@ class SsrFreelanceController < ApplicationController
     custom_field_type = UserCustomField.find_by(name: "Способ оплаты фрилансеру")
     custom_field_wallet_issue = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона")
     custom_field_type_issue = IssueCustomField.find_by(name: "Способ оплаты фрилансеру")
+    binding.pry
     begin
       if param > 0
         user = User.find(param)
