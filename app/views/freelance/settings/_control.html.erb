@@ -1,11 +1,19 @@
 <%= render '/freelance/settings/control_js' %>
 <h3>Настройка</h3>
+<div id="sunstrike_settnigs_div">
+  <div>
+    <h4>Управление работой</h4>
+    <div id="sunstrike_settnigs_select">
 
+      <%= select_tag('settings[sunstrike_freelance_auto_select]',
+                     options_for_select(ON_OFF_CONST,
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] || 0)) %>
+    </div>
+  </div>
+</div>
 <div id="sunstrike_settnigs_div">
   <div>
     <h4>Поля, которые будут относится к категории Фриланс</h4>
-
-
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_error_field_id]",
@@ -28,12 +36,6 @@
   <div>
     <div id="sunstrike_settnigs_title">
       Поле, по которому понимаем, что это Фриланс
-    </div>
-    <div id="sunstrike_settnigs_select">
-
-      <%= select_tag('settings[sunstrike_freelance_auto_select]',
-                     options_for_select(ON_OFF_CONST,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] || 0)) %>
     </div>
     <div id="sunstrike_settnigs_select">
 
@@ -74,7 +76,7 @@
     <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_field_id]',
                      options_for_select(select_mark_freelance,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_field_id'].to_i )) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_field_id'].to_i)) %>
     </div>
   </div>
 </div>
