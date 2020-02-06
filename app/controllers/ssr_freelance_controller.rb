@@ -36,18 +36,17 @@ class SsrFreelanceController < ApplicationController
     custom_field_type = UserCustomField.find_by(name: "Способ оплаты фрилансеру")
     custom_field_wallet_issue = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона")
     custom_field_type_issue = IssueCustomField.find_by(name: "Способ оплаты фрилансеру")
-    binding.pry
-    begin
-      if param > 0
+    a = []
+      if param > 3
         user = User.find(param)
-        binding.pry
-        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id).value
-        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id).value || ''
-        a = {number: custom_field_wallet_issue.id, value:  user_pay_wallet}, {number: custom_field_type_issue.id, value: user_pay_type.to_s}
+        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
+        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
+        a << {number: custom_field_wallet_issue.id, value:  user_pay_wallet == '' ? '' : user_pay_wallet.value}
+        a << {number: custom_field_type_issue.id, value: user_pay_type == '' ? '' : user_pay_wallet.value}
+      else
+        a << {number: custom_field_wallet_issue.id, value: '' }
+        a << {number: custom_field_type_issue.id, value: '' }
       end
-    rescue
-      a = {number: custom_field_wallet_issue.id, value: user_pay_wallet}, {number: custom_field_type_issue.id, value: user_pay_type.to_s}
-    end
 
     respond_to do |format|
       format.html {
