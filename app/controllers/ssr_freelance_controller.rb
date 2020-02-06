@@ -39,8 +39,9 @@ class SsrFreelanceController < ApplicationController
     begin
       if param > 0
         user = User.find(param)
+        # binding.pry
         user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id).value
-        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id).value
+        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id).value || ''
         a = {number: custom_field_wallet_issue.id, value:  user_pay_wallet}, {number: custom_field_type_issue.id, value: user_pay_type.to_s}
       end
     rescue
