@@ -33,7 +33,7 @@
 
       <%= select_tag('settings[sunstrike_freelance_auto_select]',
                      options_for_select(ON_OFF_CONST,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'].to_i)) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] || 0)) %>
     </div>
     <div id="sunstrike_settnigs_select">
 
@@ -54,36 +54,34 @@
     <% end %>
 
     <% role_adds.each do |item| %>
-      <div >Какие роли уже принадлежат к категории фриланс:</div>
+      <div>Какие роли уже принадлежат к категории фриланс:</div>
       <div id="id_rol_on_selected_<%= item.last %>">
         <span><%= item.first %></span>
         <%= link_to 'Удалить', "/ssrfreelance/delete/#{item.last}", method: :post %>
       </div>
     <% end %>
 
-
   </div>
   <div>
     <h4 id="sunstrike_settnigs_h4">Описание: </h4>
     Параметр “Делает фрилансер” автоматически переводился на “Да” в том случае, если тикет назначен на пользователя
-    с
-    одной из этих ролей
+    с одной из этих ролей
   </div>
-  <% Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'] = mark_custom_field_freelance %>
+  <% Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'] = mark_custom_field_freelance unless mark_custom_field_freelance == [] %>
 </div>
 
 <div id="sunstrike_settnigs_div">
   <div>
-      <div id="sunstrike_settnigs_title">
-        Поле способа оплаты фрилансеру в задачах:
-      </div>
-    <br />
-      <div id="id_rol_on_selected_">
+    <div id="sunstrike_settnigs_title">
+      Поле способа оплаты фрилансеру в задачах:
+    </div>
+    <br/>
+    <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_field_id]',
                      options_for_select(select_mark_freelance,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_field_id'].to_i)) %>
-      </div>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_field_id'].to_i )) %>
     </div>
+  </div>
 </div>
 
 <div>

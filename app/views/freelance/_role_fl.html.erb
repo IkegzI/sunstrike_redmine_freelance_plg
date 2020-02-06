@@ -8,7 +8,7 @@
               }
               var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
               elem.setAttribute('onchange', 'status_edit()');
-              if (elem.selectedIndex == 1) {
+              if (elem.selectedIndex == 2) {
                   <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
                   var number_field = 'issue_custom_field_values_<%= item.last%>';
                   document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
@@ -30,16 +30,16 @@
                       var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                       number_field = 'issue_custom_field_values_' + number_field;
                       if (data == 'true') {
-                          document.getElementById(number_field).selectedIndex = 0;
+                          document.getElementById(number_field).selectedIndex = 1;
                           document.getElementById(number_field).disabled = true;
                           status_edit();
                       } else {
                           document.getElementById(number_field).disabled = false;
                           if (field_check_for_data()) {
-                              document.getElementById(number_field).selectedIndex = 1;
+                              document.getElementById(number_field).selectedIndex = 2;
                               status_edit();
                           } else {
-                              document.getElementById(number_field).selectedIndex = 0;
+                              document.getElementById(number_field).selectedIndex = 1;
                           }
 
 
@@ -58,16 +58,16 @@
                   var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                   number_field = 'issue_custom_field_values_' + number_field;
                   if (data == 'true') {
-                      document.getElementById(number_field).selectedIndex = 0;
+                      document.getElementById(number_field).selectedIndex = 1;
                       document.getElementById(number_field).disabled = true;
                       status_edit();
                   } else {
                       document.getElementById(number_field).disabled = false;
                       if (field_check_for_data()) {
-                          document.getElementById(number_field).selectedIndex = 1;
+                          document.getElementById(number_field).selectedIndex = 2;
                           status_edit();
                       } else {
-                          document.getElementById(number_field).selectedIndex = 0;
+                          document.getElementById(number_field).selectedIndex = 1;
                       }
 
 
@@ -90,7 +90,7 @@
           var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
           var selected_field = '';
 
-          if (document.getElementById(key_value).selectedIndex == 1) {
+          if (document.getElementById(key_value).selectedIndex == 2) {
 
               if (field_check_for_data()) {
                   <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
@@ -110,13 +110,13 @@
                   <% end %>
               } else {
                   alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
-                  document.getElementById(key_value).selectedIndex = 0;
+                  document.getElementById(key_value).selectedIndex = 1;
               }
               pay_info();
           }
 
 
-          if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 0) {
+          if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 1) {
               <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
               number_field = 'issue_custom_field_values_<%= item.last %>';
               selected_field = document.getElementById(number_field);

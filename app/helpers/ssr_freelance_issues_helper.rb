@@ -1,7 +1,0 @@
-module SsrFreelanceHelper
-
-
-
-
-
-end

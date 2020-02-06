@@ -5,6 +5,7 @@ module Patches
     def self.included(base)
       base.class_eval do
         helper :ssr_freelance
+        helper :ssr_freelance_pay
       end
     end
   end

@@ -1,5 +1,10 @@
 module SsrFreelanceHelper
 
+
+  def settings_array?
+    Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'].array?
+  end
+
   def select_mark_freelance
     IssueCustomField.all.map { |item| [item.name, item.id] }
   end

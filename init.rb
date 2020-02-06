@@ -9,7 +9,11 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
   author_url 'http://example.com/about'
 
   ON_OFF_CONST = [['Включен', 0], ['Выключен', 1]]
-  settings default: {}, partial: 'freelance/settings/freelance'
+  settings default: {'sunstrike_freelance_auto_select' => '0',
+                     'sunstrike_freelance_field_id' => '0',
+                     'sunstrike_freelance_role_id' => '0',
+                     'sunstrike_freelance_field_page' => '0',
+                     'sunstrike_freelance_pay_field_id' => '0' }, partial: 'freelance/settings/freelance'
 
 
  # cp = ''

@@ -32,25 +32,26 @@ class SsrFreelanceController < ApplicationController
 
   def user_pay_freelance
     param = request.url.split('/').last.split('?').first.to_i
-    custom_field_wallet_id = UserCustomField.find_by(name: "Номер карты/кошелька/телефона").id
-    custom_field_type_id = UserCustomField.find_by(name: "Способ оплаты фрилансеру").id
-    custom_field_wallet_issue_id = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона").id
-    custom_field_type_issue_id = IssueCustomField.find_by(name: "Способ оплаты фрилансеру").id
+    custom_field_wallet = UserCustomField.find_by(name: "Номер карты/кошелька/телефона")
+    custom_field_type = UserCustomField.find_by(name: "Способ оплаты фрилансеру")
+    custom_field_wallet_issue = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона")
+    custom_field_type_issue = IssueCustomField.find_by(name: "Способ оплаты фрилансеру")
     begin
       if param > 0
         user = User.find(param)
-        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet_id).value
-        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type_id).value
-        a = {number: custom_field_wallet_issue_id, value: user_pay_wallet || 0}, {number: custom_field_type_issue_id, value: user_pay_type || 0}
+        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id).value
+        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id).value
+        a = {number: custom_field_wallet_issue.id, value:  user_pay_wallet}, {number: custom_field_type_issue.id, value: user_pay_type}
       end
     rescue
-      a = {number: custom_field_wallet_issue_id, value: user_pay_wallet || ''}, {number: custom_field_type_issue_id, value: user_pay_type || 0}
-      end
-      respond_to do |format|
-        format.html {
-          render json: a
-        }
-      end
+      a = {number: custom_field_wallet_issue.id, value: user_pay_wallet}, {number: custom_field_type_issue.id, value: user_pay_type}
+    end
+
+    respond_to do |format|
+      format.html {
+        render json: a
+      }
+    end
   end
 
   def addfield
