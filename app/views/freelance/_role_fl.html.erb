@@ -54,8 +54,8 @@
               type: 'GET',
               url: "/ssrfreelance/check/" + atr,
               cache: false,
+              status: 200,
               success: function (data) {
-                  qr.abort();
                   var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                   number_field = 'issue_custom_field_values_' + number_field;
                   if (data == 'true') {
@@ -71,9 +71,9 @@
                           document.getElementById(number_field).selectedIndex = 1;
                       }
                   }
+                  timeout: 4000;
               }
           });
-          qr.abort();
           pay_info();
 
       }
