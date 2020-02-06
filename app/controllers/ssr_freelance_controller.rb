@@ -49,7 +49,7 @@ class SsrFreelanceController < ApplicationController
 
     respond_to do |format|
       format.html {
-        render json: a
+        render json: a, status: 201
       }
     end
   end
