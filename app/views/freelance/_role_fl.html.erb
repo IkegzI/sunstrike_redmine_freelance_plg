@@ -25,9 +25,15 @@
               }
               var atr = document.getElementById('issue_assigned_to_id').value;
               $.ajax({
-                  type: 'GET',
-                  url: "/ssrfreelance/check/" + atr,
+                  type: 'POST',
+                  url: '/ssrfreelance/check_pay',
                   cache: false,
+                  data: {
+                      check_user_id: atr,
+                      project: '<%= request.path.split('/')[2] %>',
+                      project_id: "<%= project.nil? ? '' : project.id %>",
+                      project_select: document.getElementById('issue_project_id').value
+                  },
                   success: function (data) {
                       var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                       number_field = 'issue_custom_field_values_' + number_field;
@@ -53,8 +59,14 @@
 
       function check_db_user(atr) {
           $.ajax({
-              type: 'GET',
-              url: "/ssrfreelance/check/" + atr,
+              type: 'POST',
+              url: '/ssrfreelance/check_pay',
+              data: {
+                  check_user_id: atr,
+                  project: '<%= request.path.split('/')[2] %>',
+                  project_id: "<%= project.nil? ? '' : project.id %>",
+                  project_select: document.getElementById('issue_project_id').value
+              },
               cache: false,
               success: function (data) {
                   var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
@@ -215,8 +227,9 @@
       function pay_info() {
           if (document.getElementById('issue_assigned_to_id').value) {
               $.ajax({
-                  type: 'GET',
-                  url: "/ssrfreelance/check_pay/" + document.getElementById('issue_assigned_to_id').value,
+                  type: 'POST',
+                  data: { chek_user_id: document.getElementById('issue_assigned_to_id').value },
+                  url: "/ssrfreelance/check_pay_wallet",
                   cache: false,
                   success: function (data) {
                       var answer = JSON.parse(data);

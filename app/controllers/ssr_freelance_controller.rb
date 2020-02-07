@@ -15,38 +15,41 @@ class SsrFreelanceController < ApplicationController
   end
 
   def user_role_freelance?
-    param = request.url.split('/').last.split('?').first.to_i
-    if param > 0
-      user = User.find(request.url.split('/').last.split('?').first.to_i).id
-      a = SsDefaultUserRole.find_by(user_id: user)
-      unless a.nil?
-        a = SsrFreelanceSetting.find_by(role_id: a.role_id)
-      end
+    if params['project'] == 'new'
+      project_id = params['project_select'].to_i
+    elsif params["project_id"] != ""
+      project_id = params['project_id'].to_i
     end
+    user_id = params['check_user_id']
+     if project = Project.find(project_id)
+       # query for roles current project
+       role_ids = project.users.find(user_id).roles.ids
+     end
+
+    check = SsrFreelanceSetting.all.map{ |item| true if role_ids.include?(item.role_id)}.compact.pop
     respond_to do |format|
       format.html {
-        render text: a.nil? ? 'false' : 'true'
+        render text: check.nil? ? 'false' : 'true'
       }
     end
   end
 
   def user_pay_freelance
-    param = request.url.split('/').last.split('?').first.to_i
     custom_field_wallet = UserCustomField.find_by(name: "Номер карты/кошелька/телефона")
     custom_field_type = UserCustomField.find_by(name: "Способ оплаты фрилансеру")
     custom_field_wallet_issue = IssueCustomField.find_by(name: "Номер карты/кошелька/телефона")
     custom_field_type_issue = IssueCustomField.find_by(name: "Способ оплаты фрилансеру")
     a = []
-      if param > 3
-        user = User.find(param)
-        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
-        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
-        a << {number: custom_field_wallet_issue.id, value:  user_pay_wallet == '' ? '' : user_pay_wallet.value}
-        a << {number: custom_field_type_issue.id, value: user_pay_type == '' ? '' : user_pay_type.value}
-      else
-        a << {number: custom_field_wallet_issue.id, value: '' }
-        a << {number: custom_field_type_issue.id, value: '' }
-      end
+    if params['chek_user_id']
+      user = User.find(params['chek_user_id'])
+      user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
+      user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
+      a << {number: custom_field_wallet_issue.id, value: user_pay_wallet == '' ? '' : user_pay_wallet.value}
+      a << {number: custom_field_type_issue.id, value: user_pay_type == '' ? '' : user_pay_type.value}
+    else
+      a << {number: custom_field_wallet_issue.id, value: ''}
+      a << {number: custom_field_type_issue.id, value: ''}
+    end
 
     respond_to do |format|
       format.html {

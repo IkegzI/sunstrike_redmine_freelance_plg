@@ -1,5 +1,8 @@
 module SsrFreelanceHelper
 
+def url_correct_path
+  url.request.split('/')
+end
 
   def settings_array?
     Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'].array?
