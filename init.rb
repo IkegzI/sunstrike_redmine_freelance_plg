@@ -1,5 +1,3 @@
-require_dependency 'ssr_freelance'
-
 Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
   name 'Sunstrike Redmine Freelance plugin'
   author 'Pecherskyi Alexei'
@@ -13,16 +11,18 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
                      'sunstrike_freelance_field_id' => '0',
                      'sunstrike_freelance_role_id' => '0',
                      'sunstrike_freelance_field_page' => '0',
-                     'sunstrike_freelance_pay_field_id' => '0' }, partial: 'freelance/settings/freelance'
+                     'sunstrike_freelance_pay_field_id' => '0'}, partial: 'freelance/settings/freelance'
 
 
- # cp = ''
- path = './lib/patches'
+  require_dependency 'ssr_freelance'
+  path = './lib/patches'
   object_to_prepare = Rails.configuration
   object_to_prepare.to_prepare do
     require_relative "#{path}/issues_controller_patch.rb"
     IssuesController.send(:include, Patches::IssuesControllerPatch)
+    require_relative "#{path}/issue_patch.rb"
+    Issue.send(:include, Patches::IssuePatch)
     require_relative "#{path}/settings_controller_patch.rb"
     SettingsController.send :include, Patches::SettingsControllerPatch
-end
+  end
 end

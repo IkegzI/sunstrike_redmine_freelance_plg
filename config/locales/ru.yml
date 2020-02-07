@@ -3,3 +3,4 @@ ru:
   activerecord:
       messages:
         record_invalid: 'Возникли ошибки: %{errors}'
+        assigned_to_id_nil: "Вы не можете указать данные об оплате фрилансеру, если тикет не назначен на него."
