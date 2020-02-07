@@ -141,23 +141,35 @@
       function str_in_field(element) {
           var digit = ((Number.parseInt(element.value)) + '').length;
           var str_length = element.value.length;
+          var answer = true;
           console.log(Number.parseInt(element.value) + 'элемент ' + element.value);
-
+          console.log('str_length > digit ' + str_length > digit);
           if (str_length > digit) {
-              if (check_space(element)) {
-                  return true
+              if (isNaN(Number.parseInt(element.value))) {
+                  if (check_space(element)) {
+                      answer = true
+                  }
               } else {
-                  return false
+                  if (str_length > 0) {
+                      answer = false;
+                  } else {
+                      answer = true;
+                  }
               }
+
           } else {
+              console.log('isNaN(Number.parseInt(element.value)) = ' + isNaN(Number.parseInt(element.value)));
+              console.log('(str_length == 0) = ' + (str_length == 0));
               if (isNaN(Number.parseInt(element.value))) {
                   if (str_length == 0) {
-                      return true
+                      answer = true
                   } else {
-                      return false
+                      answer = false
                   }
               }
           }
+
+          return answer;
       }
 
       // проверка на кучу пробелов
@@ -184,17 +196,15 @@
           if (document.getElementById(number_field).tagName == 'SELECT') {
               if (document.getElementById(number_field).value == "") {
                   ans += 1;
+                  console.log('hello');
               }
           } else {
-              if (Number.parseInt(document.getElementById(number_field).value) <= 0) {
+              if (str_in_field(document.getElementById(number_field))) {
                   ans += 1;
-              } else {
-                  if (str_in_field(document.getElementById(number_field))) {
-                      ans += 1;
-                  }
               }
           }
           <% end %>
+
           if (ans >= <%= SsrFreelanceHelper.mark_custom_field_freelance.size %>) {
               return true;
           } else {
