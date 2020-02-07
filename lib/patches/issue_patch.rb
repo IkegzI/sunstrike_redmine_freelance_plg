@@ -15,10 +15,17 @@ module Patches
     module InstanceMethods
 
       def validate_issue_patch
-binding.pry
+        def validation_custom_freelance
+          frelance_ids = SsrFreelanceFields.ids
+          a = false
+          custom_field_values.each do |item|
+            if frelance_ids.include?(custom_field_values.first.custom_field.id)
+              return true if item.value != ""
+            end
+          end
+        end
         if assigned_to.nil?
-
-          errors.add :base, :assigned_to_id_nil
+          errors.add :base, :assigned_to_id_nil if validation_custom_freelance
         end
 
 
