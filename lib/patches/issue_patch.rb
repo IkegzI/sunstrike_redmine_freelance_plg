@@ -49,6 +49,7 @@ module Patches
               item
             end
           end).compact
+          binding.pry
 
           if cf.first.value == '0' and cf.first.value_was == '1'
             project_role_ids = project.users.find(assigned_to).roles.ids
@@ -68,8 +69,7 @@ module Patches
           cf = (custom_field_values.map do |item|
 
             if fields_ids.include?(item.custom_field.id)
-              binding.pry
-              if item.value.to_i > 0 or custom_field_values[2].value.scan(/[а-яА-Я]+/).size > 0
+              if item.value.to_i > 0 or item.value.scan(/[а-яА-Я]+/).size > 0
                 check = true
               end
             end
