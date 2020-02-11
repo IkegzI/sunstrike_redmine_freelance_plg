@@ -15,6 +15,7 @@ module Hooks
         if project = data[:issue].project and data[:issue].assigned_to
           user_id = data[:issue].assigned_to.id
           if user_id
+            binding.pry
             role_user_ids = project.users.find(user_id).roles.ids
           else
             role_user_ids = []
