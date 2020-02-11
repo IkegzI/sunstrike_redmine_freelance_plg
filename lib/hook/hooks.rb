@@ -15,10 +15,11 @@ module Hooks
         if project = data[:issue].project and data[:issue].assigned_to
           user_id = data[:issue].assigned_to.id
           if user_id
-            binding.pry
-            role_user_ids = project.users.find(user_id).roles.ids
-          else
-            role_user_ids = []
+            begin
+              role_user_ids = project.users.find(user_id).roles.ids
+            rescue
+              role_user_ids = []
+            end
           end
         else
           role_user_ids = data[:issue].assigned_to.roles.ids if data[:issue].assigned_to
