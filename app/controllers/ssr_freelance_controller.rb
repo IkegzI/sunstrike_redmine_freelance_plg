@@ -26,7 +26,7 @@ class SsrFreelanceController < ApplicationController
 binding.pry
     respond_to do |format|
       format.html {
-        render text: check == [] ? 'false' : 'true'
+        render text: check ? 'false' : 'true'
       }
     end
   end
