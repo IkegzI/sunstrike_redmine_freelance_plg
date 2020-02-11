@@ -39,7 +39,7 @@ module Patches
           check
         end
 
-# поле ассоциирующее изменилось
+# поле ассоциирующее изменилось + роль фрилансера
         def freelance_role_check_change_field
           id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
 
@@ -50,14 +50,13 @@ module Patches
           end).compact
 
           if cf.first.value == '0' and cf.first.value_was == '1'
-            project_role_ids = project.users.find(assigned_to).roles.ids
+            project_role_ids = Member.where(user_id: assigned_to.id).find_by(project_id: project.id).role_ids #project.users.find(assigned_to).roles.ids
             freelance_rol_ids = SsrFreelanceSetting.all.map { |item| item.role_id }
             check = freelance_rol_ids.map { |item| true if project_role_ids.include?(item) }.compact.uniq.pop
           end
-
           return true if check
-
         end
+
         #поле ассоциирующее не изменилось
         def freelance_role_check_change_field_no_edit
           id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
@@ -67,9 +66,8 @@ module Patches
               item
             end
           end).compact
-
           if cf.first.value == '0' and (cf.first.value_was == '0' or cf.first.value_was == '')
-            project_role_ids = project.users.find(assigned_to).roles.ids
+            project_role_ids = Member.where(user_id: assigned_to.id).find_by(project_id: project.id).role_ids
             freelance_rol_ids = SsrFreelanceSetting.all.map { |item| item.role_id }
             check = freelance_rol_ids.map { |item| true if project_role_ids.include?(item) }.compact.uniq.pop
           end
@@ -99,11 +97,14 @@ module Patches
 
 
 
-
+#stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
         #пользователь - фрилансер               #не изменилось, значение нет
         errors.add :base, :stop_change_field if freelance_role_check_change_field
+
+        #Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус”
                                                 # роль - фрилансер, изменяем ассоциирующее поле
         errors.add :base, :stop_change_complete_field        if freelance_check_off_complete_fields and freelance_role_check_field_no
+
 
         errors.add :base, :freelance_check_off_complete_fields if freelance_check_off_complete_fields and !(freelance_role_check_field_no and freelance_field_on_complete)
 
