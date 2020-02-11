@@ -12,12 +12,13 @@ module Hooks
       include SsrFreelanceHelper
 
       def controller_issues_save_dry(data = {})
-        if project = data[:issue].project and data[:issue].assigned_to
+        project = data[:issue].project
+        if project and data[:issue].assigned_to
           binding.pry
           user_id = data[:issue].assigned_to.id
           if user_id
             begin
-              role_user_ids = project.users.find(user_id).roles.ids
+              role_user_ids = Member.where(user_id: user_id).find_by(project_id: project.id).role_ids
             rescue
               role_user_ids = []
             end
