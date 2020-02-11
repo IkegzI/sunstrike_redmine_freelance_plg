@@ -23,7 +23,7 @@ class SsrFreelanceController < ApplicationController
 
       if project
         begin
-          role_user_ids = Member.where(user_id: user_id).find_by(project_id: project.id).role_ids
+          role_user_ids = Member.where(user_id: user.id).find_by(project_id: project.id).role_ids
         rescue
           role_user_ids = []
         end
