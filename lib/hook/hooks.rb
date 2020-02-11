@@ -30,8 +30,10 @@ module Hooks
 
         data[:issue].custom_field_values.each do |item|
           if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-            item.value = '1'
-            data[:request].flash.alert = 'Значение поля "Делает фрилансер" автоматически измененно на "Да"'
+            if item.value == '0'
+              item.value = '1'
+              data[:request].flash.alert = 'Значение поля "Делает фрилансер" автоматически измененно на "Да"'
+            end
           end
         end
       end
