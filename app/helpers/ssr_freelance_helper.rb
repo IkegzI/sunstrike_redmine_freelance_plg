@@ -64,15 +64,15 @@ module SsrFreelanceHelper
   def self.mark_custom_field_freelance
     a = []
     if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i != -10 and
-        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i <= 0
+        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i >= 0
       a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i)
     end
     if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i != -10 and
-        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i <= 0
+        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i >= 0
       a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i)
     end
     if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i != -10 and
-        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i <= 0
+        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i >= 0
       a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
     end
 
