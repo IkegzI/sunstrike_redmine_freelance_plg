@@ -10,7 +10,7 @@ module SsrFreelanceHelper
     if project = Project.find(project_id)
       role_ids = project.users.find(user_id).roles.ids
     end
-    SsrFreelanceSetting.all.map { |item| true if role_ids.include?(item.role_id) }.compact.pop
+    true if params
   end
 
   def url_correct_path
