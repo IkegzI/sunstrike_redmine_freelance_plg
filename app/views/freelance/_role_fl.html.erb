@@ -30,7 +30,9 @@
                           }
                       },
                       cache: false,
-                      success: function (data, number_field) {
+                      success: function (data, nd) {
+                          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                          number_field = 'issue_custom_field_values_' + number_field;
                           if (data == 'true') {
                               document.getElementById(number_field).value = '1';
                           } else {
