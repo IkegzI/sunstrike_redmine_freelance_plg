@@ -8,80 +8,91 @@ module Patches
     def self.included(base)
       base.send(:include, InstanceMethods)
       base.class_eval do
-        alias_method :validate_issue, :validate_issue_patch
+        validate :validate_freelance, on: [:update]
       end
     end
 
     module InstanceMethods
 
-      def validate_issue_patch
-        # def validation_custom_freelance
-        #   frelance_ids = SsrFreelanceFields.ids
-        #   a = false
-        #   custom_field_values.each do |item|
-        #     if frelance_ids.include?(custom_field_values.first.custom_field.id)
-        #       return true if item.value != ""
-        #     end
-        #   end
-        # end
-        # if assigned_to.nil?
-        #   errors.add :base, :assigned_to_id_nil if validation_custom_freelance
-        # end
+      def validate_freelance
 
-
-        if due_date && start_date && (start_date_changed? || due_date_changed?) && due_date < start_date
-          errors.add :due_date, :greater_than_start_date
-        end
-
-        if start_date && start_date_changed? && soonest_start && start_date < soonest_start
-          errors.add :start_date, :earlier_than_minimum_start_date, :date => format_date(soonest_start)
-        end
-
-        if fixed_version
-          if !assignable_versions.include?(fixed_version)
-            errors.add :fixed_version_id, :inclusion
-          elsif reopening? && fixed_version.closed?
-            errors.add :base, I18n.t(:error_can_not_reopen_issue_on_closed_version)
-          end
-        end
-
-        # Checks that the issue can not be added/moved to a disabled tracker
-        if project && (tracker_id_changed? || project_id_changed?)
-          if tracker && !project.trackers.include?(tracker)
-            errors.add :tracker_id, :inclusion
-          end
-        end
-
-        if assigned_to_id_changed? && assigned_to_id.present?
-          unless assignable_users.include?(assigned_to)
-            errors.add :assigned_to_id, :invalid
-          end
-        end
-
-        # Checks parent issue assignment
-        if @invalid_parent_issue_id.present?
-          errors.add :parent_issue_id, :invalid
-        elsif @parent_issue
-          if !valid_parent_project?(@parent_issue)
-            errors.add :parent_issue_id, :invalid
-          elsif (@parent_issue != parent) && (
-          self.would_reschedule?(@parent_issue) ||
-              @parent_issue.self_and_ancestors.any? { |a| a.relations_from.any? { |r| r.relation_type == IssueRelation::TYPE_PRECEDES && r.issue_to.would_reschedule?(self) } }
-          )
-            errors.add :parent_issue_id, :invalid
-          elsif !closed? && @parent_issue.closed?
-            # cannot attach an open issue to a closed parent
-            errors.add :base, :open_issue_with_closed_parent
-          elsif !new_record?
-            # moving an existing issue
-            if move_possible?(@parent_issue)
-              # move accepted
-            else
-              errors.add :parent_issue_id, :invalid
+        def freelance_field_on_complete
+          check = false
+          fields_ids = SsrFreelanceHelper.mark_custom_field_freelance.map{ |item| item.last }
+          custom_field_values.map do |item|
+            if fields_ids.include?(item.custom_field.id)
+              check = true if item.value.to_i > 0
             end
           end
+          check
         end
+
+        def freelance_role_check_field_no
+          check = false
+          field_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+          custom_field_values.map do |item|
+            if field_id == item.custom_field.id
+              check = true if item.value.to_i == 0
+              check = (check and freelance_role_check_change_field)
+              item.value = '1' if check
+            end
+          end
+          check
+        end
+
+
+        def freelance_role_check_change_field
+          id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+
+          cf = (custom_field_values.map do |item|
+            if item.custom_field.id == id_field_freelance
+              item
+            end
+          end).compact
+
+          if cf.first.value == '0' and cf.first.value_was == '1'
+            project_role_ids = project.users.find(assigned_to).roles.ids
+            freelance_rol_ids = SsrFreelanceSetting.all.map { |item| item.role_id }
+            check = freelance_rol_ids.map { |item| true if project_role_ids.include?(item) }.compact.uniq.pop
+          end
+
+          return true if check
+
+        end
+
+        def freelance_check_off_complete_fields
+          id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+          id_field_freelance_check = false
+          check = false
+          fields_ids = SsrFreelanceHelper.mark_custom_field_freelance.map{ |item| item.last }
+          cf = (custom_field_values.map do |item|
+
+            if fields_ids.include?(item.custom_field.id)
+              if item.value.to_i > 0
+                check = true
+              end
+            end
+            if item.custom_field.id == id_field_freelance
+              id_field_freelance_check = true if item.value == '0'
+            end
+          end).compact
+          id_field_freelance_check and check
+        end
+
+
+
+
+
+
+        errors.add :base, :stop_change_field if freelance_role_check_change_field
+
+        errors.add :base, :stop_change_complete_field         if freelance_role_check_field_no
+
+        errors.add :base, :freelance_check_off_complete_fields if freelance_check_off_complete_fields and !(freelance_role_check_field_no and freelance_field_on_complete)
+
       end
+
     end
+
   end
 end

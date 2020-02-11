@@ -13,3 +13,6 @@
     width: 15%;
     display: inline-block;
 }
+.field_with_errors input{
+    border: 1px solid red !important;
+}

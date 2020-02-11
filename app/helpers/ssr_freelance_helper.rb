@@ -1,19 +1,40 @@
 module SsrFreelanceHelper
 
-def url_correct_path
-  url.request.split('/')
-end
+  def freelance_find_data(params)
+    if params['project'] == 'new'
+      project_id = params['project_select'].to_i
+    elsif params["project_id"] != ""
+      project_id = params['project_id'].to_i
+    end
+    user_id = params['check_user_id']
+    if project = Project.find(project_id)
+      role_ids = project.users.find(user_id).roles.ids
+    end
+    SsrFreelanceSetting.all.map { |item| true if role_ids.include?(item.role_id) }.compact.pop
+  end
+
+  def url_correct_path
+    url.request.split('/')
+  end
 
   def settings_array?
     Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'].array?
   end
 
+  def select_mark_freelance_user
+    CustomField.where(type: 'UserCustomField').map { |item| [item.name, item.id] }
+  end
+
+  def select_mark_freelance_issue
+    CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
+  end
+
   def select_mark_freelance
-    IssueCustomField.all.map { |item| [item.name, item.id] }
+    CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
   end
 
   def select_mark_field_freelance
-    IssueCustomField.all.map { |item| [item.name, item.id] }
+    CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
   end
 
   def role_user_work_add
@@ -28,35 +49,31 @@ end
     end
   end
 
-
-  def mark_custom_field_freelance
-    a = []
-    SsrFreelanceFields.all.each do |fild|
-      unless fild.field_id.nil? or fild.field_id  == 0
-        item = IssueCustomField.find(fild.field_id.to_i)
-        a << [item.name, item.id]
-      end
-    end
-    a.compact
-  end
-
   def field_add_freelance_filtered
-    arr = IssueCustomField.all.map { |item| [item.name, item.id] }
-    arr - mark_custom_field_freelance
+    arr = CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
+    arr = arr - SsrFreelanceHelper.mark_custom_field_freelance
+    arr << ['<отсутствует>', -10]
+
   end
 
 
   def setting_role_users_size
+
   end
 
   def self.mark_custom_field_freelance
     a = []
-    SsrFreelanceFields.all.each do |fild|
-      unless fild.field_id.nil? or fild.field_id  == 0
-        item = IssueCustomField.find(fild.field_id)
-        a << [item.name, item.id]
-      end
+    if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i != -10
+      a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i)
     end
+    if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i != -10
+      a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i)
+    end
+    if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i != -10
+      a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
+    end
+
+    a.map!{|item| [item.name, item.id]}
     a.compact
   end
 

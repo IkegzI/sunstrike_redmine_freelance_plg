@@ -8,5 +8,6 @@ module Patches
         helper :ssr_freelance_pay
       end
     end
+
   end
 end

@@ -24,5 +24,7 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
     Issue.send(:include, Patches::IssuePatch)
     require_relative "#{path}/settings_controller_patch.rb"
     SettingsController.send :include, Patches::SettingsControllerPatch
+    require_relative "#{path}/custom_field_patch.rb"
+    CustomField.send :include, Patches::CustomFieldPatch
   end
 end
