@@ -17,7 +17,7 @@ class SsrFreelanceController < ApplicationController
 
   def user_role_freelance?
     check = freelance_find_data(params)
-    if check.nil?
+    if check
       user = User.find(params['check_user_id'].to_i)
       project = Project.find(params['project_id'].to_i) if params['project_id']
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
