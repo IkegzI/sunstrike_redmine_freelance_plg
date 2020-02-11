@@ -50,7 +50,7 @@ binding.pry
 
     if project
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
-      check = (Member.where(user_id: user_id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact
+      check = (Member.where(user_id: user.id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact
     end
     if check != []
       a << {number: custom_field_wallet_issue.id, value: user_pay_wallet == '' ? '' : user_pay_wallet.value}
