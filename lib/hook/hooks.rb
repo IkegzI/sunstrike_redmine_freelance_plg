@@ -13,6 +13,7 @@ module Hooks
 
       def controller_issues_save_dry(data = {})
         if project = data[:issue].project and data[:issue].assigned_to
+          binding.pry
           user_id = data[:issue].assigned_to.id
           role_user_ids = project.users.find(user_id).roles.ids
         else
