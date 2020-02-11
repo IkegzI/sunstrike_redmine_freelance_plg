@@ -21,7 +21,7 @@ class SsrFreelanceController < ApplicationController
       user = User.find(params['check_user_id'].to_i)
       project = Project.find(params['project_id'].to_i) if params['project_id']
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
-      check = (project.users.find(user.id).roles.ids.map { |item| true if role_ids_custom.include?(item) }).compact
+      check = (Member.where(user_id: user_id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact
     end
 
     respond_to do |format|
@@ -50,7 +50,7 @@ class SsrFreelanceController < ApplicationController
 
     if project
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
-      check = (project.users.find(user.id).roles.ids.map { |item| true if role_ids_custom.include?(item) }).compact
+      check = (Member.where(user_id: user_id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact
     end
     if check != []
       a << {number: custom_field_wallet_issue.id, value: user_pay_wallet == '' ? '' : user_pay_wallet.value}
