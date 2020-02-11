@@ -19,8 +19,12 @@ class SsrFreelanceController < ApplicationController
     check = true if params
     if check
       user = User.find(params['check_user_id'].to_i)
-      project = Project.find(params['project_id'].to_i) if params['project_id']
-
+      if params['project'] == 'new'
+        project = Project.find(params['project_select'].to_i) if params['project_select']
+      else
+        project = Project.find(params['project_id'].to_i) if params['project_id']
+      end
+      binding.pry
       if project
         begin
           role_user_ids = Member.where(user_id: user.id).find_by(project_id: project.id).role_ids
