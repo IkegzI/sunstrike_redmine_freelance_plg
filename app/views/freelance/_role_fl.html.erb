@@ -11,35 +11,37 @@
       );
 
       function check_db_user(atr) {
-          $.ajax({
-                  type: 'POST',
-                  url: '/ssrfreelance/check_pay',
-                  data: {
-                      check_user_id: atr,
-                      project: '<%= request.path.split('/')[2] %>',
-                      project_id: "<%= project.nil? ? '' : project.id %>",
-                      project_select: function () {
-                          if (document.getElementById('issue_project_id') != null) {
-                              return document.getElementById('issue_project_id').value
-                          } else {
-                              return ''
+          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+          number_field = 'issue_custom_field_values_' + number_field;
+          if (document.getElementById(number_field) != null) {
+              $.ajax({
+                      type: 'POST',
+                      url: '/ssrfreelance/check_pay',
+                      data: {
+                          check_user_id: atr,
+                          project: '<%= request.path.split('/')[2] %>',
+                          project_id: "<%= project.nil? ? '' : project.id %>",
+                          project_select: function () {
+                              if (document.getElementById('issue_project_id') != null) {
+                                  return document.getElementById('issue_project_id').value
+                              } else {
+                                  return ''
+                              }
                           }
-                      }
-                  },
-                  cache: false,
-                  success: function (data) {
-                      var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-                      number_field = 'issue_custom_field_values_' + number_field;
-                      if (data == 'true') {
-                          document.getElementById(number_field).value = '1';
-                      } else {
-                          document.getElementById(number_field).value = '0';
-                      }
+                      },
+                      cache: false,
+                      success: function (data, number_field) {
+                          if (data == 'true') {
+                              document.getElementById(number_field).value = '1';
+                          } else {
+                              document.getElementById(number_field).value = '0';
+                          }
 
+                      }
                   }
-              }
-          );
-          pay_info();
+              );
+              pay_info();
+          }
       }
 
 
