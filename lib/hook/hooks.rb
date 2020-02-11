@@ -41,7 +41,6 @@ module Hooks
       #
 
       def controller_issues_before_save_dry(data)
-        binding.pry
         field_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
         a = data[:issue].custom_values.map do |item|
 

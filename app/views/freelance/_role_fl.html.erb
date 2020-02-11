@@ -2,69 +2,43 @@
 <% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and (request.url.split("/")[-2] == 'issues') %>
   <script type="text/javascript">
       $(document).ready(function () {
-              var atr = document.getElementById('issue_assigned_to_id').value;
-              check_db_user(atr);
               document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
-              if (document.getElementById('issue_assigned_to_id') != '') {
-                  pay_info();
-              }
-              var elem = document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>');
-              elem.setAttribute('onchange', 'status_edit()');
-              if (elem.value == 0) {
-                  if (document.getElementById('issue_assigned_to_id').value == '') {
-                      <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
-                      var number_field = 'issue_custom_field_values_<%= item.last%>';
-                      document.getElementById(number_field).setAttribute('onclick', 'alert_error_edit()');
-                      document.getElementById(number_field).setAttribute('onkeypress', 'alert_error_edit()');
-                      if (document.getElementById(number_field).tagName != "SELECT") {
-                          // document.getElementById(number_field).setAttribute('readonly', 'readonly');
-                      }
-                      if (document.getElementById(number_field).tagName == "SELECT") {
-                          document.getElementById(number_field).setAttribute('onchange', 'error_edit_select(' + number_field + ')');
-                      }
-                      <% end %>
-                  }
+              if (document.getElementById('issue_assigned_to_id').value != '') {
+                  var atr = document.getElementById('issue_assigned_to_id').value;
+                  check_db_user(atr);
               }
           }
       );
 
       function check_db_user(atr) {
           $.ajax({
-              type: 'POST',
-              url: '/ssrfreelance/check_pay',
-              data: {
-                  check_user_id: atr,
-                  project: '<%= request.path.split('/')[2] %>',
-                  project_id: "<%= project.nil? ? '' : project.id %>",
-                  project_select: function () {
-                      if (document.getElementById('issue_project_id') != null) {
-                          return document.getElementById('issue_project_id').value
-                      } else {
-                          return ''
+                  type: 'POST',
+                  url: '/ssrfreelance/check_pay',
+                  data: {
+                      check_user_id: atr,
+                      project: '<%= request.path.split('/')[2] %>',
+                      project_id: "<%= project.nil? ? '' : project.id %>",
+                      project_select: function () {
+                          if (document.getElementById('issue_project_id') != null) {
+                              return document.getElementById('issue_project_id').value
+                          } else {
+                              return ''
+                          }
                       }
-                  }
-              },
-              cache: false,
-              success: function (data) {
-                  var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-                  number_field = 'issue_custom_field_values_' + number_field;
-                  if (data == 'true') {
-                      document.getElementById(number_field).value = 1;
-                      document.getElementById(number_field).disabled = true;
-                      status_edit();
-                  } else {
-                      document.getElementById(number_field).disabled = false;
-                      if (field_check_for_data()) {
-                          document.getElementById(number_field).value = 0;
-                          status_edit();
+                  },
+                  cache: false,
+                  success: function (data) {
+                      var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                      number_field = 'issue_custom_field_values_' + number_field;
+                      if (data == 'true') {
+                          document.getElementById(number_field).value = '1';
                       } else {
-                          document.getElementById(number_field).value = 1;
+                          document.getElementById(number_field).value = '0';
                       }
-
 
                   }
               }
-          });
+          );
           pay_info();
       }
 
@@ -72,135 +46,6 @@
       function role_right() {
           var atr = document.getElementById('issue_assigned_to_id').value;
           check_db_user(atr);
-      }
-
-      function status_edit() {
-          var number_field = '';
-          var key_value = 'issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>';
-          var selected_field = '';
-          console.log(key_value);
-          console.log(document.getElementById(key_value).value == 0);
-          if (document.getElementById(key_value).value == 0) {
-              console.log(field_check_for_data());
-              if (field_check_for_data()) {
-                  <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
-                  number_field = 'issue_custom_field_values_<%= item.last %>';
-                  selected_field = document.getElementById(number_field);
-                  if (selected_field.tagName != "SELECT") {
-                      selected_field.value = 0;
-                  }
-                  selected_field.setAttribute('onclick', 'alert_error_edit()');
-                  selected_field.setAttribute('onkeypress', 'alert_error_edit()');
-                  if (selected_field.tagName == "SELECT") {
-                      selected_field.disable = true;
-                      selected_field.setAttribute('onchange', 'error_edit_select(' + number_field + ')');
-                  }
-                  selected_field.options == true;
-                  <% end %>
-              } else {
-                  if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').value == 0) {
-                      alert('Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус');
-                      document.getElementById(key_value).value = 1;
-                  }
-              }
-              // pay_info();
-          }
-
-
-          if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').value == 1) {
-              <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
-              number_field = 'issue_custom_field_values_<%= item.last %>';
-              selected_field = document.getElementById(number_field);
-              selected_field.removeAttribute('onclick');
-              selected_field.removeAttribute('onchange');
-              selected_field.removeAttribute('onkeypress');
-              selected_field.removeAttribute('readonly');
-              selected_field.removeAttribute('disabled');
-              <% end %>
-          }
-      }
-
-      function alert_error_edit() {
-          if (document.getElementById('update').getAttribute('style') != 'display:none;') {
-              alert("Задачу делает фрилансер? Чтобы заполнить данное поле, выставите параметр “Делает фрилансер” на “Да”");
-          }
-      }
-
-      function error_edit_select(number_field) {
-          if (document.getElementById('issue_custom_field_values_<%= Setting.plugin_sunstrike_redmine_freelance_plg["sunstrike_freelance_field_id"] %>').selectedIndex == 1) {
-              number_field.value = 1;
-              alert_error_edit();
-          }
-      }
-
-      function str_in_field(element) {
-          var digit = ((Number.parseInt(element.value)) + '').length;
-          var str_length = element.value.length;
-          var answer = true;
-          if (str_length > digit) {
-              if (isNaN(Number.parseInt(element.value))) {
-                  if (check_space(element)) {
-                      answer = true
-                  }
-              } else {
-                  if (str_length > 0) {
-                      answer = false;
-                  } else {
-                      answer = true;
-                  }
-              }
-
-          } else {
-              if (isNaN(Number.parseInt(element.value))) {
-                  if (str_length == 0) {
-                      answer = true
-                  } else {
-                      answer = false
-                  }
-              }
-          }
-
-          return answer;
-      }
-
-      // проверка на кучу пробелов
-      function check_space(element) {
-
-          var str = element.value.split('');
-          var ans = 0;
-          for (index = 0; str[index] == ' '; ++index) {
-              ans += 1;
-          }
-          if (element.value.length <= ans) {
-              return true;
-          } else {
-              return false;
-          }
-      }
-
-
-      function field_check_for_data() {
-          var ans = 0;
-          <% SsrFreelanceHelper.mark_custom_field_freelance.each do |item| %>
-          number_field = 'issue_custom_field_values_' + <%= item.last %>;
-
-          if (document.getElementById(number_field).tagName == 'SELECT') {
-              if (document.getElementById(number_field).value == "") {
-                  ans += 1;
-                  console.log('hello');
-              }
-          } else {
-              if (str_in_field(document.getElementById(number_field))) {
-                  ans += 1;
-              }
-          }
-          <% end %>
-
-          if (ans >= <%= SsrFreelanceHelper.mark_custom_field_freelance.size %>) {
-              return true;
-          } else {
-              return false;
-          }
       }
 
       function pay_info() {

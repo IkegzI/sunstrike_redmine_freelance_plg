@@ -18,13 +18,18 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
   path = './lib/patches'
   object_to_prepare = Rails.configuration
   object_to_prepare.to_prepare do
+
     require_relative "#{path}/issues_controller_patch.rb"
     IssuesController.send(:include, Patches::IssuesControllerPatch)
+
     require_relative "#{path}/issue_patch.rb"
     Issue.send(:include, Patches::IssuePatch)
+
     require_relative "#{path}/settings_controller_patch.rb"
     SettingsController.send :include, Patches::SettingsControllerPatch
+
     require_relative "#{path}/custom_field_patch.rb"
     CustomField.send :include, Patches::CustomFieldPatch
+
   end
 end

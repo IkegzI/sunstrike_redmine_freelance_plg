@@ -17,30 +17,44 @@ class SsrFreelanceController < ApplicationController
 
   def user_role_freelance?
     check = freelance_find_data(params)
+    if check.nil?
+      user = User.find(params['check_user_id'].to_i)
+      project = Project.find(params['project_id'].to_i) if params['project_id']
+      role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
+      check = (project.users.find(user.id).roles.ids.map { |item| true if role_ids_custom.include?(item) }).compact
+    end
+
     respond_to do |format|
       format.html {
-        render text: check.nil? ? 'false' : 'true'
+        render text: check == [] ? 'false' : 'true'
       }
     end
   end
 
   def user_pay_freelance
-    custom_field_wallet = UserCustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i)
-    custom_field_type = UserCustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i)
-    custom_field_wallet_issue = IssueCustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i)
-    custom_field_type_issue = IssueCustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i)
+    custom_field_wallet = CustomField.where(type: 'UserCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i)
+    custom_field_type = CustomField.where(type: 'UserCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i)
+    custom_field_wallet_issue = CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i)
+    custom_field_type_issue = CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i)
     a = []
-    if freelance_find_data(params)
-      if params['check_user_id']
-        user = User.find(params['check_user_id'])
-        user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
-        user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
-        a << {number: custom_field_wallet_issue.id, value: user_pay_wallet == '' ? '' : user_pay_wallet.value}
-        a << {number: custom_field_type_issue.id, value: user_pay_type == '' ? '' : user_pay_type.value}
+    if params['check_user_id']
+      user = User.find(params['check_user_id'].to_i)
+      if params['project'] == 'new'
+        project = Project.find(params['project_select'].to_i)
       else
-        a << {number: custom_field_wallet_issue.id, value: ''}
-        a << {number: custom_field_type_issue.id, value: ''}
+        project = Project.find(params['project_id'].to_i)
       end
+      user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
+      user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
+    end
+
+    if project
+      role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
+      check = (project.users.find(user.id).roles.ids.map { |item| true if role_ids_custom.include?(item) }).compact
+    end
+    if check != []
+      a << {number: custom_field_wallet_issue.id, value: user_pay_wallet == '' ? '' : user_pay_wallet.value}
+      a << {number: custom_field_type_issue.id, value: user_pay_type == '' ? '' : user_pay_type.value}
     else
       a << {number: custom_field_wallet_issue.id, value: ''}
       a << {number: custom_field_type_issue.id, value: ''}

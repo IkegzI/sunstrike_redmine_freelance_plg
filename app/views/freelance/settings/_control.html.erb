@@ -49,7 +49,7 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_accrued]",
-                       options_for_select(select_mark_freelance_issue,
+                       options_for_select(select_mark_freelance,
                                           Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'])) %>
       </div>
     <% end %>
@@ -59,7 +59,7 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_paid]",
-                       options_for_select(select_mark_freelance_issue,
+                       options_for_select(select_mark_freelance,
                                           Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'])) %>
       </div>
     <% end %>
@@ -69,7 +69,7 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_status]",
-                       options_for_select(select_mark_freelance_issue,
+                       options_for_select(select_mark_freelance,
                                           Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'])) %>
       </div>
     <% end %>

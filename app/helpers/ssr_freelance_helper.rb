@@ -25,8 +25,9 @@ module SsrFreelanceHelper
     CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
   end
 
+
   def select_mark_freelance
-    CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
+    CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] } << ['<отсутствует>', -10]
   end
 
   def select_mark_field_freelance
@@ -68,6 +69,10 @@ module SsrFreelanceHelper
     end
     a.map!{|item| [item.name, item.id]}
     a.compact
+  end
+
+  def self.mark_custom_field_freelance_js
+    SsrFreelanceHelper.mark_custom_field_freelance.map{|item| [item.name, item.id] if item.name != '<отсутствует>'}
   end
 
 end
