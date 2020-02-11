@@ -85,7 +85,7 @@ module Patches
 
         errors.add :base, :stop_change_field if freelance_role_check_change_field
         binding.pry
-        errors.add :base, :stop_change_complete_field        if freelance_role_check_field_no and !(freelance_role_check_change_field)
+        errors.add :base, :stop_change_complete_field        if freelance_role_check_field_no
 
         errors.add :base, :freelance_check_off_complete_fields if freelance_check_off_complete_fields and !(freelance_role_check_field_no and freelance_field_on_complete)
 
