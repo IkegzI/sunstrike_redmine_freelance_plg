@@ -21,7 +21,7 @@ class SsrFreelanceController < ApplicationController
       user = User.find(params['check_user_id'].to_i)
       project = Project.find(params['project_id'].to_i) if params['project_id']
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
-      check = (Member.where(user_id: user_id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact.pop
+      check = (Member.where(user_id: user.id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact.pop
     end
 binding.pry
     respond_to do |format|
