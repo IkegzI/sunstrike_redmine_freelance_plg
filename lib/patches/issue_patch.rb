@@ -69,7 +69,7 @@ module Patches
 
             if fields_ids.include?(item.custom_field.id)
               binding.pry
-              if item.value.to_i > 0
+              if item.value.to_i > 0 or custom_field_values[2].value.scan(/[а-яА-Я]+/).size > 0
                 check = true
               end
             end
