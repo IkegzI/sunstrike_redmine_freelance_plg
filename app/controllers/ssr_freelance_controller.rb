@@ -27,10 +27,12 @@ class SsrFreelanceController < ApplicationController
         rescue
           role_user_ids = []
         end
+      end
+
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
       check = (role_user_ids.map { |item| true if role_ids_custom.include?(item) }).compact.pop
     end
-binding.pry
+    binding.pry
     respond_to do |format|
       format.html {
         render text: check ? 'false' : 'true'
