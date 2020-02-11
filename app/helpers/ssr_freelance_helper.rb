@@ -17,10 +17,6 @@ module SsrFreelanceHelper
     url.request.split('/')
   end
 
-  def settings_array?
-    Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_page'].array?
-  end
-
   def select_mark_freelance_user
     CustomField.where(type: 'UserCustomField').map { |item| [item.name, item.id] }
   end
@@ -56,11 +52,6 @@ module SsrFreelanceHelper
 
   end
 
-
-  def setting_role_users_size
-
-  end
-
   def self.mark_custom_field_freelance
     a = []
     if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i != -10 and
@@ -75,7 +66,6 @@ module SsrFreelanceHelper
         Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i > 0
       a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
     end
-
     a.map!{|item| [item.name, item.id]}
     a.compact
   end

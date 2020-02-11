@@ -49,8 +49,8 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_accrued]",
-                       options_for_select(field_add_freelance_filtered,
-                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i)) %>
+                       options_for_select(select_mark_freelance_issue,
+                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'])) %>
       </div>
     <% end %>
   </div>
@@ -59,8 +59,8 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_paid]",
-                       options_for_select(field_add_freelance_filtered,
-                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i)) %>
+                       options_for_select(select_mark_freelance_issue,
+                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'])) %>
       </div>
     <% end %>
   </div>
@@ -69,8 +69,8 @@
     <% if role_user_work_add.size > 0 %>
       <div id="id_rol_on_selected_">
         <%= select_tag("settings[sunstrike_freelance_field_status]",
-                       options_for_select(field_add_freelance_filtered,
-                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)) %>
+                       options_for_select(select_mark_freelance_issue,
+                                          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'])) %>
       </div>
     <% end %>
   </div>
@@ -80,13 +80,13 @@
     <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_user_field_id]',
                      options_for_select(select_mark_freelance_user,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i)) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'])) %>
     </div>
     <div id="sunstrike_settnigs_title">В задачах:</div>
     <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_issue_field_id]',
                      options_for_select(select_mark_freelance_issue,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i)) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'])) %>
     </div>
   </div>
     <h4>Поле реквизиты оплаты фрилансеру:</h4>
@@ -94,13 +94,13 @@
     <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_wallet_user_field_id]',
                      options_for_select(select_mark_freelance_user,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i)) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'])) %>
     </div>
     <div id="sunstrike_settnigs_title">В задачах</div>
     <div id="id_rol_on_selected_">
       <%= select_tag('settings[sunstrike_freelance_pay_wallet_issue_field_id]',
                      options_for_select(select_mark_freelance_issue,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i)) %>
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'])) %>
     </div>
 </div>
 </div>
