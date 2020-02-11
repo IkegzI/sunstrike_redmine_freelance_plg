@@ -68,6 +68,7 @@ module Patches
           cf = (custom_field_values.map do |item|
 
             if fields_ids.include?(item.custom_field.id)
+              binding.pry
               if item.value.to_i > 0
                 check = true
               end
@@ -78,7 +79,6 @@ module Patches
           end).compact
           id_field_freelance_check and check
         end
-
 
 
 
