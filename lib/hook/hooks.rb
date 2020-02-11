@@ -13,9 +13,12 @@ module Hooks
 
       def controller_issues_save_dry(data = {})
         if project = data[:issue].project and data[:issue].assigned_to
-          binding.pry
           user_id = data[:issue].assigned_to.id
-          role_user_ids = project.users.find(user_id).roles.ids
+          if user_id
+            role_user_ids = project.users.find(user_id).roles.ids
+          else
+            role_user_ids = []
+          end
         else
           role_user_ids = data[:issue].assigned_to.roles.ids if data[:issue].assigned_to
         end
@@ -23,10 +26,10 @@ module Hooks
 
 
         data[:issue].custom_field_values.each do |item|
-        if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-          item.value = '1'
-          data[:request].flash.alert = 'Значение поля "Делает фрилансер" автоматически измененно на "Да"'
-        end
+          if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+            item.value = '1'
+            data[:request].flash.alert = 'Значение поля "Делает фрилансер" автоматически измененно на "Да"'
+          end
         end
       end
 
