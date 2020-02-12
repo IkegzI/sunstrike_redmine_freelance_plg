@@ -1,81 +1,79 @@
 <% SsrFreelancePayHelper.check_field_on_pay %>
-<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and (request.url.split("/")[-2] == 'issues') %>
+<% if Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] == '0' and (request.url.split("/")[-2] == 'issues' or (request.url.split("/").last == 'issues' and request.url.split("/")[-3] == 'projects')) %>
   <script type="text/javascript">
+      setInterval(set_attr_assigned_to, 1000);
+
       $(document).ready(function () {
-              document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'role_right()');
-              if (document.getElementById('issue_assigned_to_id').value != '') {
-                  var atr = document.getElementById('issue_assigned_to_id').value;
-                  check_db_user(atr);
-              }
+              document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
+              check_db_user();
           }
       );
 
-      function check_db_user(atr) {
-          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-          number_field = 'issue_custom_field_values_' + number_field;
-          if (document.getElementById(number_field) != null) {
-              $.ajax({
-                      type: 'POST',
-                      url: '/ssrfreelance/check_pay',
-                      data: {
-                          check_user_id: atr,
-                          project: '<%= request.path.split('/')[2] %>',
-                          project_id: "<%= project.nil? ? '' : project.id %>",
-                          project_select: function () {
-                              if (document.getElementById('issue_project_id') != null) {
-                                  return document.getElementById('issue_project_id').value
-                              } else {
-                                  return ''
-                              }
-                          }
-                      },
-                      cache: false,
-                      success: function (data, nd) {
-                          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-                          number_field = 'issue_custom_field_values_' + number_field;
-                          if (data == 'true') {
-                              document.getElementById(number_field).value = '1';
-                          } else {
-                              document.getElementById(number_field).value = '0';
-                          }
+      function set_attr_assigned_to() {
 
+          if (document.getElementById('issue_assigned_to_id') != null) {
+              <% if (request.url.split("/").last != 'issues') %>
+              if (document.getElementById('update') != null) {
+                  if (document.getElementById('update').getAttribute('style') == '') {
+                      <% end %>
+                      if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
+
+                          document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
+                          check_db_user();
                       }
                   }
-              );
-              pay_info();
+              }
+              <% if (request.url.split("/").last != 'issues') %>
           }
       }
 
+      <% end %>
 
-      function role_right() {
+      function check_db_user() {
           var atr = document.getElementById('issue_assigned_to_id').value;
-          check_db_user(atr);
-      }
+          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+          number_field = 'issue_custom_field_values_' + number_field;
+          if (document.getElementById('issue_assigned_to_id').value != '') {
+              if (document.getElementById(number_field) != null) {
+                  $.ajax({
+                          type: 'POST',
+                          url: '/ssrfreelance/check_pay',
+                          data: {
+                              check_user_id: atr,
+                              project: '<%= request.path.split('/')[2] %>',
+                              project_id: "<%= project.nil? ? '' : project.id %>",
+                              project_select: function () {
+                                  if (document.getElementById('issue_project_id') != null) {
+                                      return document.getElementById('issue_project_id').value
+                                  } else {
+                                      return ''
+                                  }
+                              }
+                          },
+                          cache: false,
+                          success: function (data) {
+                              var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                              number_field = 'issue_custom_field_values_' + number_field;
+                              var bang = "";
+                              if (document.getElementById('update') != null) {
+                                  bang = document.getElementById('update').getAttribute('style')
+                              }
+                              if (bang == "") {
+                                  if (data == 'true') {
+                                      document.getElementById(number_field).value = '1';
+                                      document.getElementById(number_field).setAttribute('disabled', 'true');
 
-      function pay_info() {
-          if (document.getElementById('issue_assigned_to_id').value) {
-              $.ajax({
-                  type: 'POST',
-                  data: {
-                      check_user_id: document.getElementById('issue_assigned_to_id').value,
-                      project: '<%= request.path.split('/')[2] %>',
-                      project_id: "<%= project.nil? ? '' : project.id %>",
-                      project_select: function () {
-                          if (document.getElementById('issue_project_id') != null) {
-                              return document.getElementById('issue_project_id').value
-                          } else {
-                              return ''
+                                  } else {
+                                      document.getElementById(number_field).value = '0';
+                                      document.getElementById(number_field).removeAttribute('disabled');
+
+                                  }
+                              }
+
                           }
                       }
-                  },
-                  url: "/ssrfreelance/check_pay_wallet",
-                  cache: false,
-                  success: function (data) {
-                      var answer = JSON.parse(data);
-                      document.getElementById('issue_custom_field_values_' + answer[0]['number']).value = answer[0]['value'];
-                      document.getElementById('issue_custom_field_values_' + answer[1]['number']).value = answer[1]['value'];
-                  }
-              });
+                  );
+              }
           }
       }
   </script>

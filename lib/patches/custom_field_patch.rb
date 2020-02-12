@@ -16,11 +16,7 @@ module Patches
     module InstanceMethods
 
       def validate_custom
-
-
-
-
-
+        
       end
 
     end
