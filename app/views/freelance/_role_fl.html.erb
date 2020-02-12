@@ -62,6 +62,8 @@
                               if (document.getElementById('update') != null) {
                                   bang = document.getElementById('update').getAttribute('style')
                               }
+                              console.log('ferwgawegvfdsagwrav');
+
                               if (bang == "") {
                                   if (data == 'true') {
                                       document.getElementById(number_field).value = '1';
@@ -73,6 +75,7 @@
                                   } else {
                                       document.getElementById(number_field).value = '0';
                                       document.getElementById(number_field).setAttribute('editing', 'yes');
+                                      document.getElementById(number_field).removeAttribute('onchange');
                                       document.getElementById(number_field).removeAttribute('onmouseout');
                                   }
                               }
