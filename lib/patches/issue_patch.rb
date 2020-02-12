@@ -152,7 +152,7 @@ module Patches
 # роль - фрилансер, изменяем ассоциирующее поле stop_change_complete_field
         errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
-
+        binding.pry
         errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_turn_off and !(freelance_role_check_change_turn_off)
 
 

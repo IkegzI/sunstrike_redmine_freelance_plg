@@ -61,12 +61,14 @@
                               if (bang == "") {
                                   if (data == 'true') {
                                       document.getElementById(number_field).value = '1';
-                                      document.getElementById(number_field).setAttribute('disabled', 'true');
+
+                                      document.getElementById(number_field).setAttribute('editing', 'no');
+                                      document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
 
                                   } else {
                                       document.getElementById(number_field).value = '0';
-                                      document.getElementById(number_field).removeAttribute('disabled');
-
+                                      document.getElementById(number_field).setAttribute('editing', 'yes');
+                                      document.getElementById(number_field).removeAttribute('onmouseout');
                                   }
                               }
 
@@ -76,5 +78,15 @@
               }
           }
       }
+
+      function onmouseout_set(number_field) {
+          var nf = number_field;
+          if (document.getElementById(nf).getAttribute('editing') == 'no'){
+          document.getElementById(number_field).value = '1';
+      }
+          
+      }
+      
+      
   </script>
 <% end %>
