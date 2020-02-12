@@ -10,11 +10,9 @@
 
       function set_attr_assigned_to() {
           if (document.getElementById('issue_assigned_to_id') != null) {
-              <% if (request.url.split("/").last != 'issues') %>
               if (document.getElementById('update') != null) {
 
                   if (document.getElementById('update').getAttribute('style') == '') {
-                      <% end %>
                       var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                       number_field = 'issue_custom_field_values_' + number_field;
 
@@ -28,11 +26,9 @@
                       }
                   }
               }
-              <% if (request.url.split("/").last != 'issues') %>
           }
       }
 
-      <% end %>
 
       function check_db_user() {
           var atr = document.getElementById('issue_assigned_to_id').value;
