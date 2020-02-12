@@ -17,9 +17,10 @@
                       <% end %>
                       var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                       number_field = 'issue_custom_field_values_' + number_field;
-                      check_db_user();
 
                       if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
+                          check_db_user();
+
                           document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
                       }
                       if (document.getElementById(number_field).getAttribute('editing') != 'no') {
