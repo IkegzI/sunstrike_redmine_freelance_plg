@@ -160,7 +160,7 @@ module Patches
         errors.add :base, :stop_change_field if freelance_role_check
 
         # Назначено - пустое значение
-        errors.add :base, :assigned_to_nil if assigned_to_nil
+        errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
 
         #
 
