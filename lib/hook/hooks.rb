@@ -7,6 +7,10 @@ module Hooks
       # render_on(:view_issues_show_details_bottom, partial: 'improvements/status')
       # render_on(:view_layouts_base_html_head, partial: 'freelance/role_fl')
       render_on(:view_issues_new_top, partial: 'freelance/role_fl')
+      
+      render_on(:view_issues_show_description_bottom, partial: 'freelance/role_fl')
+      render_on(:view_issues_edit_notes_bottom, partial: 'freelance/role_fl')
+
       render_on(:view_issues_show_details_bottom, partial: 'freelance/role_fl')
       render_on(:view_issues_form_details_bottom, partial: 'freelance/role_fl')
 
