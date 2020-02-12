@@ -10,20 +10,29 @@
       );
 
       function set_attr_assigned_to() {
-
+              console.log('0');
           if (document.getElementById('issue_assigned_to_id') != null) {
+              console.log('');
               <% if (request.url.split("/").last != 'issues') %>
               if (document.getElementById('update') != null) {
+                  console.log('');
+
                   if (document.getElementById('update').getAttribute('style') == '') {
+                      console.log('');
+
                       <% end %>
                       var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                       number_field = 'issue_custom_field_values_' + number_field;
                       if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
+                          console.log('');
+
 
                           document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
                           check_db_user();
                       }
                       if (document.getElementById(number_field).getAttribute('editing') != 'no') {
+                          console.log('');
+
                           document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
                       }
                   }
