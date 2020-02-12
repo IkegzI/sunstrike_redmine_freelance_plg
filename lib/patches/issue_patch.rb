@@ -50,7 +50,7 @@ module Patches
               item
             end
           end).compact
-          binding.pry
+          
           if cf.first.value == '0'
             project_role_ids = Member.where(user_id: assigned_to.id).find_by(project_id: project.id).role_ids #project.users.find(assigned_to).roles.ids
             freelance_rol_ids = SsrFreelanceSetting.all.map { |item| item.role_id }
