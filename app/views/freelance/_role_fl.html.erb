@@ -35,7 +35,6 @@
       <% end %>
 
       function check_db_user() {
-          console.log('123321');
           var atr = document.getElementById('issue_assigned_to_id').value;
           var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
           number_field = 'issue_custom_field_values_' + number_field;
@@ -69,12 +68,14 @@
                               if (bang == "") {
                                   if (data == 'true') {
                                       document.getElementById(number_field).value = '1';
-
+                                      console.log('number_field');
                                       document.getElementById(number_field).setAttribute('editing', 'no');
                                       document.getElementById(number_field).setAttribute('onchange', 'alert_change();');
                                       document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
 
                                   } else {
+                                      console.log('фдыу');
+
                                       document.getElementById(number_field).value = '0';
                                       document.getElementById(number_field).setAttribute('editing', 'yes');
                                       document.getElementById(number_field).removeAttribute('onchange');
