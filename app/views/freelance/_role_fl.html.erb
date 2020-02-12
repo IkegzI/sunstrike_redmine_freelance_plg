@@ -16,10 +16,15 @@
               if (document.getElementById('update') != null) {
                   if (document.getElementById('update').getAttribute('style') == '') {
                       <% end %>
+                      var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                      number_field = 'issue_custom_field_values_' + number_field;
                       if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
 
                           document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
                           check_db_user();
+                      }
+                      if (document.getElementById(number_field).getAttribute('editing') != 'no') {
+                          document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
                       }
                   }
               }
@@ -30,6 +35,7 @@
       <% end %>
 
       function check_db_user() {
+          console.log('123321');
           var atr = document.getElementById('issue_assigned_to_id').value;
           var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
           number_field = 'issue_custom_field_values_' + number_field;
