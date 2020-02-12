@@ -67,6 +67,7 @@
                                       document.getElementById(number_field).value = '1';
 
                                       document.getElementById(number_field).setAttribute('editing', 'no');
+                                      document.getElementById(number_field).setAttribute('onchange', 'alert_change();');
                                       document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
 
                                   } else {
@@ -82,7 +83,9 @@
               }
           }
       }
-
+      function alert_change() {
+          alert('Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле "Делает фрилансер" установить значение "Нет"');
+      }
       function onmouseout_set(number_field) {
           var nf = number_field;
           if (document.getElementById(nf).getAttribute('editing') == 'no'){
