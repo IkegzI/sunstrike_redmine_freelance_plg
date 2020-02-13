@@ -161,7 +161,6 @@ module Patches
 
 
 # Назначено - пустое значение
-binding.pry
         errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
 
         #
