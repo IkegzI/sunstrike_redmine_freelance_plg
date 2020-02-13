@@ -40,7 +40,6 @@ class SsrFreelanceController < ApplicationController
       check = (role_user_ids.map { |item| 1 if role_ids_custom.include?(item) }).compact.pop || 2
       if issue
         if check == 2
-
           if project.issues.find(issue).custom_values.find_by(custom_field_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i).value.to_i == 1
             check = 3
           else
@@ -49,9 +48,6 @@ class SsrFreelanceController < ApplicationController
         end
       end
     end
-    binding.pry
-
-
     respond_to do |format|
       format.html {
         render text: check
