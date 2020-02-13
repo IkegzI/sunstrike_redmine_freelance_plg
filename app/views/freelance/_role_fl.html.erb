@@ -83,6 +83,7 @@
                                     console.log('3');
 
                                     document.getElementById(number_field).value = '1';
+                                    document.getElementById(number_field).setAttribute('editing', 'yes');
                                     document.getElementById(number_field).removeAttribute('onchange');
                                     document.getElementById(number_field).removeAttribute('onmouseout');
                                     console.log(number_field);

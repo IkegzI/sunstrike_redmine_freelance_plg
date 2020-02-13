@@ -141,7 +141,6 @@ module Patches
 
         def assigned_to_nil
           check = false
-
           check = true  if assigned_to.nil?
           check
         end
@@ -159,9 +158,10 @@ module Patches
 #пользователь - фрилансер               #не изменилось, значение нет
         errors.add :base, :stop_change_field if freelance_role_check
 
-        
+
 
 # Назначено - пустое значение
+binding.pry
         errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
 
         #
