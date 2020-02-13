@@ -2,16 +2,6 @@
 <h3>Настройка</h3>
 <div id="sunstrike_settnigs_div">
   <div>
-    <h2>Управление работой</h2>
-    <div id="sunstrike_settnigs_select">
-      <%= select_tag('settings[sunstrike_freelance_auto_select]',
-                     options_for_select(ON_OFF_CONST,
-                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_auto_select'] || 0)) %>
-    </div>
-  </div>
-</div>
-<div id="sunstrike_settnigs_div">
-  <div>
     <h4> Поле, по которому выставляется признак "фриланса" </h4>
     <div id="sunstrike_settnigs_select">
 
