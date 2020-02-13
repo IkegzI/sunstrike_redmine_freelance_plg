@@ -1,100 +1,111 @@
 <% SsrFreelancePayHelper.check_field_on_pay %>
-  <script type="text/javascript">
-      setInterval(set_attr_assigned_to, 1000);
+<script type="text/javascript">
+    setInterval(set_attr_assigned_to, 1000);
 
-      $(document).ready(function () {
-              document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
-              check_db_user();
-          }
-      );
+    $(document).ready(function () {
+            document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
+            check_db_user();
+        }
+    );
 
-      function set_attr_assigned_to() {
-          if (document.getElementById('issue_assigned_to_id') != null) {
-              if (document.getElementById('update') != null) {
+    function set_attr_assigned_to() {
+        if (document.getElementById('issue_assigned_to_id') != null) {
+            if (document.getElementById('update') != null) {
 
-                  if (document.getElementById('update').getAttribute('style') == '') {
-                      var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-                      number_field = 'issue_custom_field_values_' + number_field;
+                if (document.getElementById('update').getAttribute('style') == '') {
+                    var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                    number_field = 'issue_custom_field_values_' + number_field;
 
-                      if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
-                          check_db_user();
+                    if (document.getElementById(number_field) != null) {
+                        if (document.getElementById('issue_assigned_to_id').getAttribute('onchange') == null) {
+                            check_db_user();
+                            document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
+                        }
+                        // if (document.getElementById(number_field).getAttribute('editing') != 'no') {
+                        //     document.getElementById(number_field).setAttribute('editing', 'no');
+                        //     document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
+                        // }
+                    }
+                }
+            }
+        }
+    }
 
-                          document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
-                      }
-                      if (document.getElementById(number_field).getAttribute('editing') != 'no') {
-                          document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
-                      }
-                  }
-              }
-          }
-      }
+
+    function check_db_user() {
+        var atr = document.getElementById('issue_assigned_to_id').value;
+        var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+        number_field = 'issue_custom_field_values_' + number_field;
+        if (document.getElementById('issue_assigned_to_id').value != '') {
+            if (document.getElementById(number_field) != null) {
+                $.ajax({
+                        type: 'POST',
+                        url: '/ssrfreelance/check_pay',
+                        data: {
+                            check_user_id: atr,
+                            project: '<%= request.path.split('/')[2] %>',
+                            project_id: "<%= project.nil? ? '' : project.id %>",
+                            issue_id: '<%= request.path.split('/').last  %>',
+                            project_select: function () {
+                                if (document.getElementById('issue_project_id') != null) {
+                                    return document.getElementById('issue_project_id').value
+                                } else {
+                                    return ''
+                                }
+                            }
+                        },
+                        cache: false,
+                        success: function (data) {
+                            var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
+                            number_field = 'issue_custom_field_values_' + number_field;
+                            var bang = "";
+                            if (document.getElementById('update') != null) {
+                                bang = document.getElementById('update').getAttribute('style')
+                            }
+                            console.log(bang);
+                            console.log(data);
+
+                            if (data == '1') {
+                                document.getElementById(number_field).value = '1';
+                                console.log('number_field');
+                                document.getElementById(number_field).setAttribute('editing', 'no');
+                                document.getElementById(number_field).setAttribute('onchange', 'alert_change();');
+                                document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
+
+                            } else {
+                                if (data == '2') {
+
+                                    document.getElementById(number_field).value = '0';
+                                    document.getElementById(number_field).setAttribute('editing', 'yes');
+                                    document.getElementById(number_field).removeAttribute('onchange');
+                                    document.getElementById(number_field).removeAttribute('onmouseout');
+                                } else {
+                                    console.log('3');
+
+                                    document.getElementById(number_field).value = '1';
+                                    document.getElementById(number_field).removeAttribute('onchange');
+                                    document.getElementById(number_field).removeAttribute('onmouseout');
+                                    console.log(number_field);
+                                }
+                            }
+                        }
+                    }
+                );
+            }
+        }
+    }
+
+    function alert_change() {
+        alert('Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле "Делает фрилансер" установить значение "Нет"');
+    }
+
+    function onmouseout_set(number_field) {
+        var nf = number_field;
+        if (document.getElementById(nf).getAttribute('editing') == 'no') {
+            document.getElementById(number_field).value = '1';
+        }
+
+    }
 
 
-      function check_db_user() {
-          var atr = document.getElementById('issue_assigned_to_id').value;
-          var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-          number_field = 'issue_custom_field_values_' + number_field;
-          if (document.getElementById('issue_assigned_to_id').value != '') {
-              if (document.getElementById(number_field) != null) {
-                  $.ajax({
-                          type: 'POST',
-                          url: '/ssrfreelance/check_pay',
-                          data: {
-                              check_user_id: atr,
-                              project: '<%= request.path.split('/')[2] %>',
-                              project_id: "<%= project.nil? ? '' : project.id %>",
-                              project_select: function () {
-                                  if (document.getElementById('issue_project_id') != null) {
-                                      return document.getElementById('issue_project_id').value
-                                  } else {
-                                      return ''
-                                  }
-                              }
-                          },
-                          cache: false,
-                          success: function (data) {
-                              var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
-                              number_field = 'issue_custom_field_values_' + number_field;
-                              var bang = "";
-                              if (document.getElementById('update') != null) {
-                                  bang = document.getElementById('update').getAttribute('style')
-                              }
-                              console.log('ferwgawegvfdsagwrav');
-
-                              if (bang == "") {
-                                  if (data == 'true') {
-                                      document.getElementById(number_field).value = '1';
-                                      console.log('number_field');
-                                      document.getElementById(number_field).setAttribute('editing', 'no');
-                                      document.getElementById(number_field).setAttribute('onchange', 'alert_change();');
-                                      document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
-
-                                  } else {
-                                      console.log('фдыу');
-
-                                      document.getElementById(number_field).value = '0';
-                                      document.getElementById(number_field).setAttribute('editing', 'yes');
-                                      document.getElementById(number_field).removeAttribute('onchange');
-                                      document.getElementById(number_field).removeAttribute('onmouseout');
-                                  }
-                              }
-
-                          }
-                      }
-                  );
-              }
-          }
-      }
-      function alert_change() {
-          alert('Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле "Делает фрилансер" установить значение "Нет"');
-      }
-      function onmouseout_set(number_field) {
-          var nf = number_field;
-          if (document.getElementById(nf).getAttribute('editing') == 'no'){
-          document.getElementById(number_field).value = '1';
-      }
-          
-      }
-      
-      
-  </script>
+</script>
