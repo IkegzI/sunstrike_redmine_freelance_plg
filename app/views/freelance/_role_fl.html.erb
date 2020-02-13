@@ -62,12 +62,9 @@
                             if (document.getElementById('update') != null) {
                                 bang = document.getElementById('update').getAttribute('style')
                             }
-                            console.log(bang);
-                            console.log(data);
 
                             if (data == '1') {
                                 document.getElementById(number_field).value = '1';
-                                console.log('number_field');
                                 document.getElementById(number_field).setAttribute('editing', 'no');
                                 document.getElementById(number_field).setAttribute('onchange', 'alert_change();');
                                 document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
@@ -80,13 +77,12 @@
                                     document.getElementById(number_field).removeAttribute('onchange');
                                     document.getElementById(number_field).removeAttribute('onmouseout');
                                 } else {
-                                    console.log('3');
+                                    console.log('Не фрилансер, но задача выполняется на фриласе');
 
                                     document.getElementById(number_field).value = '1';
                                     document.getElementById(number_field).setAttribute('editing', 'yes');
                                     document.getElementById(number_field).removeAttribute('onchange');
                                     document.getElementById(number_field).removeAttribute('onmouseout');
-                                    console.log(number_field);
                                 }
                             }
                         }
