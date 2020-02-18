@@ -1,5 +1,5 @@
 require_dependency 'issues_controller'
-
+module SsrFreelance
 module Patches
   module IssuesControllerPatch
     def self.included(base)
@@ -10,4 +10,5 @@ module Patches
     end
 
   end
+end
 end

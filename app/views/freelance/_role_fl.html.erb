@@ -21,10 +21,6 @@
                             check_db_user();
                             document.getElementById('issue_assigned_to_id').setAttribute('onchange', 'check_db_user()');
                         }
-                        // if (document.getElementById(number_field).getAttribute('editing') != 'no') {
-                        //     document.getElementById(number_field).setAttribute('editing', 'no');
-                        //     document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
-                        // }
                     }
                 }
             }
@@ -70,20 +66,10 @@
                                 document.getElementById(number_field).setAttribute('onmouseout', 'onmouseout_set("' + number_field + '")');
 
                             } else {
-                                if (data == '2') {
-
-                                    document.getElementById(number_field).value = '0';
-                                    document.getElementById(number_field).setAttribute('editing', 'yes');
-                                    document.getElementById(number_field).removeAttribute('onchange');
-                                    document.getElementById(number_field).removeAttribute('onmouseout');
-                                } else {
-                                    console.log('Не фрилансер, но задача выполняется на фриласе');
-
-                                    document.getElementById(number_field).value = '1';
-                                    document.getElementById(number_field).setAttribute('editing', 'yes');
-                                    document.getElementById(number_field).removeAttribute('onchange');
-                                    document.getElementById(number_field).removeAttribute('onmouseout');
-                                }
+                                document.getElementById(number_field).value = '0';
+                                document.getElementById(number_field).setAttribute('editing', 'yes');
+                                document.getElementById(number_field).removeAttribute('onchange');
+                                document.getElementById(number_field).removeAttribute('onmouseout');
                             }
                         }
                     }
@@ -93,7 +79,9 @@
     }
 
     function alert_change() {
-        alert('Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле "Делает фрилансер" установить значение "Нет"');
+        if (document.getElementById('issue_assigned_to_id').value != "") {
+            alert('Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле "Делает фрилансер" установить значение "Нет"');
+        }
     }
 
     function onmouseout_set(number_field) {
@@ -101,7 +89,11 @@
         if (document.getElementById(nf).getAttribute('editing') == 'no') {
             document.getElementById(number_field).value = '1';
         }
-
+        if (document.getElementById('issue_assigned_to_id').value == "") {
+            document.getElementById(number_field).setAttribute('editing', 'yes');
+            document.getElementById(number_field).removeAttribute('onchange');
+            document.getElementById(number_field).removeAttribute('onmouseout');
+        }
     }
 
 

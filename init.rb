@@ -29,10 +29,8 @@ Redmine::Plugin.register :sunstrike_redmine_freelance_plg do
   #
   # end
 end
-
 ActionDispatch::Callbacks.to_prepare do
-  IssuesController.send(:include, Patches::IssuesControllerPatch)
-  Issue.send(:include, Patches::IssuePatch)
-  SettingsController.send :include, Patches::SettingsControllerPatch
-  CustomField.send :include, Patches::CustomFieldPatch
+  IssuesController.send(:include, SsrFreelance::Patches::IssuesControllerPatch)
+  Issue.send(:include, SsrFreelance::Patches::IssuePatch)
+  SettingsController.send :include, SsrFreelance::Patches::SettingsControllerPatch
 end
