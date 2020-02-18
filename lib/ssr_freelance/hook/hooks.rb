@@ -44,6 +44,15 @@ module SsrFreelance
               end
             end
           end
+
+          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued']
+          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid']
+          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status']
+          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id']
+
+
+
+
         end
         #
         #   def controller_issues_new_after_save(data = {})
