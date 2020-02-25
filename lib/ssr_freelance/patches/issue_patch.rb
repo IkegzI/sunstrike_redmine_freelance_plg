@@ -148,10 +148,10 @@ module SsrFreelance
             cash = 0
             status = 0
             custom_field_values.each do |item|
-              if item.custom_values.id == id_status
+              if item.custom_field.id == id_status
                   status = item.value
               end
-              if item.custom_values.id == id_cash
+              if item.custom_field.id == id_cash
                 cash = item.value
               end
             end
