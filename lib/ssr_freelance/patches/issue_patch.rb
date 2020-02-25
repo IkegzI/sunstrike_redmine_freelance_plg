@@ -144,8 +144,7 @@ module SsrFreelance
             check = false
             field_status = CustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
             field_cash = CustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i)
-            binding.pry
-            if field_status.value_was != field_status.value
+            if field_status.value != ''
               if field_cash <= 0
                 check = true
               end
