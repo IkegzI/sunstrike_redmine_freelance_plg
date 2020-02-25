@@ -139,16 +139,28 @@ module SsrFreelance
             end
           end
 
+          # параметр “Фриланс (начислено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
           def freelance_check_cash_field
             #sunstrike_freelance_field_paid
             check = false
-            # field_status = CustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
-            # field_cash = CustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i)
-            # if field_status.value != ''
-            #   if field_cash <= 0
-            #     check = true
-            #   end
-            # end
+            id_status = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i
+            id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
+            cash = 0
+            status = 0
+            issue.custom_field_values.each do |item|
+              if item.custom_values.id == id_status
+                  status = item.value
+              end
+              if item.custom_values.id == id_cash
+                cash = item.value
+              end
+            end
+            binding.pry
+            if status != ''
+              if cash <= 0
+                check = true
+              end
+            end
             check
           end
 
@@ -166,21 +178,17 @@ module SsrFreelance
           errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
           errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_turn_off and !(freelance_role_check_change_turn_off)
-
-
+          
           #stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
           #пользователь - фрилансер               #не изменилось, значение нет
           # errors.add :base, :stop_change_field if freelance_role_check
 
-
           # Назначено - пустое значение
           errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
 
-          #
-          # пустое поле ФРиланс Начислено, фриланс статус только пустой
+          # параметр “Фриланс (начислено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
           #settings_sunstrike_freelance_field_status
-          errors.add :base, :status_to_nil if freelance_check_cash_field
-
+          errors.add :base, :status_to_check_paid if freelance_check_cash_field
 
         end
       end
