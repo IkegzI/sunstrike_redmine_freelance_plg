@@ -152,7 +152,7 @@ module SsrFreelance
                   status = item.value
               end
               if item.custom_field.id == id_cash
-                cash = item.value
+                cash = item.value.to_i
               end
             end
             if status != ''
