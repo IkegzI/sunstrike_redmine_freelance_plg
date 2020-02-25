@@ -3,6 +3,7 @@ module SsrFreelance
   module Patches
     module IssuePatch
       include Redmine::I18n
+
       def self.included(base)
         base.send(:include, InstanceMethods)
         base.class_eval do
@@ -38,10 +39,10 @@ module SsrFreelance
           #   check
           # end
 
-# поле ассоциирующее изменилось + роль фрилансера
+          # поле ассоциирующее изменилось + роль фрилансера
 
 
-#поле ассоциирующее не изменилось
+          #поле ассоциирующее не изменилось
 
 
           def freelance_role_check_turn_off # yes
@@ -57,6 +58,7 @@ module SsrFreelance
             end
             check
           end
+
           #
           # def freelance_role_check_turn_on
           #   check = false
@@ -137,6 +139,19 @@ module SsrFreelance
             end
           end
 
+          def freelance_check_cash_field
+            #sunstrike_freelance_field_paid
+            check = false
+            field_status = CustomField(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
+            field_cash = CustomField.find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i).value.to_i
+            if field_status.value_was != field_status.value
+              if field_cash <= 0
+                check = true
+              end
+            end
+            check
+          end
+
 
           def assigned_to_nil # yes
             check = false
@@ -144,24 +159,28 @@ module SsrFreelance
             check
           end
 
-#freelance
+          #freelance
 
-#Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус”
-# роль - фрилансер, изменяем ассоциирующее поле stop_change_complete_field
+          #Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус”
+          # роль - фрилансер, изменяем ассоциирующее поле stop_change_complete_field
           errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
           errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_turn_off and !(freelance_role_check_change_turn_off)
 
 
-#stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
-#пользователь - фрилансер               #не изменилось, значение нет
-# errors.add :base, :stop_change_field if freelance_role_check
+          #stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
+          #пользователь - фрилансер               #не изменилось, значение нет
+          # errors.add :base, :stop_change_field if freelance_role_check
 
 
-# Назначено - пустое значение
+          # Назначено - пустое значение
           errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
 
           #
+          # пустое поле ФРиланс Начислено, фриланс статус только пустой
+          #settings_sunstrike_freelance_field_status
+          errors.add :base, :status_to_nil if freelance_check_cash_field
+
 
         end
       end
