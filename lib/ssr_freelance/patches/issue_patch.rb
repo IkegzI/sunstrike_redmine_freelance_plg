@@ -147,7 +147,7 @@ module SsrFreelance
             id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
             cash = 0
             status = 0
-            issue.custom_field_values.each do |item|
+            custom_field_values.each do |item|
               if item.custom_values.id == id_status
                   status = item.value
               end
@@ -155,7 +155,6 @@ module SsrFreelance
                 cash = item.value
               end
             end
-            binding.pry
             if status != ''
               if cash <= 0
                 check = true
@@ -178,7 +177,7 @@ module SsrFreelance
           errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
           errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_turn_off and !(freelance_role_check_change_turn_off)
-          
+
           #stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
           #пользователь - фрилансер               #не изменилось, значение нет
           # errors.add :base, :stop_change_field if freelance_role_check
