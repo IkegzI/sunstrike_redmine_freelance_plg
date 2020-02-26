@@ -37,7 +37,15 @@ module SsrFreelance
           check = SsrFreelanceSetting.all.map { |item| true if role_user_ids.include?(item.role_id) }.compact.pop if data[:issue].assigned_to
           #
           #
+          check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
           data[:issue].custom_field_values.each do |item|
+            if check_pay_info == item.custom_field.id
+              if item.value.to_f > 0
+                if data[:issue].status_id == 1
+                  data[:issue].status_id = 2
+                end
+              end
+            end
             if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
               if item.value == '0'
                 item.value = '1'
@@ -51,9 +59,8 @@ module SsrFreelance
           Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id']
 
 
-
-
         end
+
         #
         #   def controller_issues_new_after_save(data = {})
         #     controller_issues_save_dry(data)
@@ -66,17 +73,20 @@ module SsrFreelance
         #   #before save
         #   #
         #
-          def controller_issues_before_save_dry(data)
-            controller_issues_save_dry(data)
-          end
+        def controller_issues_before_save_dry(data)
+
+          controller_issues_save_dry(data)
+        end
 
         def controller_issues_new_before_save(data = {})
           controller_issues_save_dry(data)
         end
+
         #
-          def controller_issues_edit_before_save(data = {})
-            controller_issues_save_dry(data)
-          end
+        def controller_issues_edit_before_save(data = {})
+          controller_issues_save_dry(data)
+        end
+
         #
         #
       end
