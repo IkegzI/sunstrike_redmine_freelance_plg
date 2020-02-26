@@ -105,5 +105,46 @@ class SsrFreelanceController < ApplicationController
     redirect_to plugin_settings_path('sunstrike_redmine_freelance_plg')
   end
 
+  def pay_cash
+    value_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i
+    value_50 = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50']
+    value_100 = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100']
+    value = 'non'
+    value_issue = 'non'
+    arr = status_select
+    index = (0..arr.size).find_all { |item| arr[item] == params['value_status'] }.first
+    issue = Issue.find(params[:issue_id])
+    id_field = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+    issue.custom_field_values.each do |item|
+      if value_id == item.custom_field.id
+        if item.value == arr[index - 1]
+          issue.custom_field_values.each do |item|
+            if item.custom_field.id == id_field
+              if params['value_status'] == value_50
+                value = item.value.to_f * 0.5
+              elsif params['value_status'] == value_100
+                value = item.value.to_f
+              end
+            end
+          end
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html {
+        if value != 'non'
+          if value > 0 and value != value.to_i
+            render json: value.round(2).to_json, status: 200
+          else
+            render json: value.to_i.to_json, status: 200
+          end
+        else
+          render json: value.to_i.to_json, status: 404
+        end
+      }
+    end
+  end
+
 
 end

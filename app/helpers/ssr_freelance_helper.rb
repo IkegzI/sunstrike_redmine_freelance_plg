@@ -30,6 +30,16 @@ module SsrFreelanceHelper
     CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] } << ['<отсутствует>', -10]
   end
 
+  def status_select
+    arr = []
+    id_status = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i
+    if id_status > 0
+      field = CustomField.find(id_status)
+      arr = field.possible_values
+    end
+    arr
+  end
+
   def select_mark_field_freelance
     CustomField.where(type: 'IssueCustomField').map { |item| [item.name, item.id] }
   end
@@ -67,12 +77,12 @@ module SsrFreelanceHelper
         Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i > 0
       a << CustomField.where(type: 'IssueCustomField').find(Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i)
     end
-    a.map!{|item| [item.name, item.id]}
+    a.map! { |item| [item.name, item.id] }
     a.compact
   end
 
   def self.mark_custom_field_freelance_js
-    SsrFreelanceHelper.mark_custom_field_freelance.map{|item| [item.name, item.id] if item.name != '<отсутствует>'}
+    SsrFreelanceHelper.mark_custom_field_freelance.map { |item| [item.name, item.id] if item.name != '<отсутствует>' }
   end
 
 end

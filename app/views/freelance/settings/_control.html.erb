@@ -63,6 +63,19 @@
                                           Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'])) %>
       </div>
     <% end %>
+    <% if status_select.size > 0 %>
+    <div>
+      <h4>Статус по которому необходимо оплатить 50%</h4>
+      <%= select_tag("settings[sunstrike_freelance_field_status_50]",
+                     options_for_select(status_select,
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50'])) %>
+      <h4>Статус по которому необходимо оплатить 100%</h4>
+      <%= select_tag("settings[sunstrike_freelance_field_status_100]",
+                     options_for_select(status_select,
+                                        Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100'])) %>
+    </div>
+      <% end %>
+
   </div>
   <div>
     <h4>Поле способа оплаты фрилансеру:</h4>

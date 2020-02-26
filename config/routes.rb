@@ -6,4 +6,5 @@ post '/ssrfreelance/addfields/(:id)' => 'ssr_freelance#addfield'
 post '/ssrfreelance/deletefield/(:id)' => 'ssr_freelance#deletefield'
 post '/ssrfreelance/check_pay' => 'ssr_freelance#user_role_freelance?'
 post '/ssrfreelance/check_pay_wallet' => 'ssr_freelance#user_pay_freelance'
+post '/ssrfreelance/pay_cash' => 'ssr_freelance#pay_cash'
 

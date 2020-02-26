@@ -135,7 +135,6 @@ module SsrFreelance
               # end
               check
               #
-
             end
           end
 
@@ -144,12 +143,12 @@ module SsrFreelance
             #sunstrike_freelance_field_paid
             check = false
             id_status = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i
-            id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
+            id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
             cash = 0
             status = 0
             custom_field_values.each do |item|
               if item.custom_field.id == id_status
-                  status = item.value
+                status = item.value
               end
               if item.custom_field.id == id_cash
                 cash = item.value.to_i
@@ -163,10 +162,80 @@ module SsrFreelance
             check
           end
 
+          # параметр “Фриланс (выплачено)” пустой, равен нулю или меньше нуля,
+          def freelance_check_cash_pay
+            check = false
+            check_select = false
+            value_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i
+            value_50 = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50']
+            value_100 = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100']
+            value_pay_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
+            custom_field_values.each do |item|
+              if item.custom_field.id == value_id
+                if item.value == value_50 or item.value == value_100
+                  check_select = true
+                end
+              end
+            end
+            if check_select
+              custom_field_values.each do |item|
+                if item.custom_field.id == value_pay_id
+                  if item.value.to_i <= 0
+                    check = true
+                  end
+                end
+              end
+            end
+            check
+          end
+
+          # нельзя заполнить “Фриланс (выплачено)” если параметр “Фриланс (начислено)” пустой
+          def freelance_check_cash_payment
+            check_paid = false
+            check_accrued = false
+            check = false
+            value_paid = 0
+            value_accrued = 0
+            value_paid_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
+            value_accrued_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+            cf = custom_field_values
+            cf.each do |item|
+              if item.custom_field.id == value_accrued_id
+                value_accrued = item.value.to_f
+                if item.value.to_i <= 0
+                  check_accrued = true
+                end
+              end
+              if item.custom_field.id == value_paid_id
+                value_paid = item.value.to_f
+                if item.value.to_i > 0
+                  check_paid = true
+                end
+              end
+            end
+            if (check_accrued and check_paid) or value_paid > value_accrued
+              check = true
+            end
+            check
+          end
 
           def assigned_to_nil # yes
             check = false
             check = true if assigned_to.nil?
+            check
+          end
+
+          def freelance_status_on
+            #sunstrike_freelance_field_id
+            check = false
+            field_id = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+            custom_field_values.each do |item|
+              if item.custom_field.id == field_id
+                if item.value == '1'
+                  check = true
+                end
+              end
+            end
             check
           end
 
@@ -187,7 +256,15 @@ module SsrFreelance
 
           # параметр “Фриланс (начислено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
           #settings_sunstrike_freelance_field_status
-          errors.add :base, :status_to_check_paid if freelance_check_cash_field
+          errors.add :base, :status_to_check_paid if freelance_check_cash_field and !freelance_check_cash_payment and freelance_status_on
+
+          # параметр “Фриланс (выплачено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
+          #settings_sunstrike_freelance_field_status
+          errors.add :base, :status_to_check_pay if freelance_check_cash_pay and freelance_status_on
+
+          # нельзя заполнить “Фриланс (выплачено)” если параметр “Фриланс (начислено)” пустой
+          #settings_sunstrike_freelance_field_status
+          errors.add :base, :status_to_check_payment if freelance_check_cash_payment and freelance_status_on
 
         end
       end
