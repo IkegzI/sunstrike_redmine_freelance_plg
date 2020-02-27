@@ -4,9 +4,7 @@ module SsrFreelance
   module Hooks
     module Status
       class SsrFreelanceHookListener < Redmine::Hook::ViewListener
-        #vieshooks
-        # render_on(:view_issues_show_details_bottom, partial: 'improvements/status')
-        # render_on(:view_layouts_base_html_head, partial: 'freelance/role_fl')
+
         render_on(:view_issues_new_top, partial: 'freelance/role_fl')
 
         render_on(:view_issues_bulk_edit_details_bottom, partial: 'freelance/role_fl')
@@ -53,26 +51,13 @@ module SsrFreelance
             end
           end
 
-          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued']
-          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid']
-          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status']
-          Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id']
+          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued']
+          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid']
+          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status']
+          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id']
 
 
         end
-
-        #
-        #   def controller_issues_new_after_save(data = {})
-        #     controller_issues_save_dry(data)
-        #   end
-        #
-        #   def controller_issues_edit_after_save(data = {})
-        #     controller_issues_save_dry(data)
-        #   end
-        #
-        #   #before save
-        #   #
-        #
         def controller_issues_before_save_dry(data)
 
           controller_issues_save_dry(data)
@@ -89,6 +74,25 @@ module SsrFreelance
 
         #
         #
+
+        def controller_issues_bulk_edit_before_save(data={})
+          check = false
+          role_ids = data[:project].users.find(data[:issue].assigned_to_id).roles.ids
+          role_ids.each do |item|
+            binding.pry
+            if SsrFreelanceSetting.where(role_id: item) != []
+              check = true
+            end
+          end
+          if check
+            data[:issue].custom_field_values.each do |item|
+              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+                item.value = 1
+              end
+            end
+          end
+        end
+
       end
     end
   end
