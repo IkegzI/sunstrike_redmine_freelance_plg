@@ -79,7 +79,6 @@ module SsrFreelance
           check = false
           role_ids = data[:project].users.find(data[:issue].assigned_to_id).roles.ids
           role_ids.each do |item|
-            binding.pry
             if SsrFreelanceSetting.where(role_id: item) != []
               check = true
             end

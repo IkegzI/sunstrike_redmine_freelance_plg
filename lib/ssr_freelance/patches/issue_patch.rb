@@ -256,7 +256,6 @@ module SsrFreelance
             #sunstrike_freelance_field_accrued
             id_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
             custom_field_values.each do |item|
-              binding.pry
               if item.custom_field.id == id_freelance
                 if item.value.to_f > 0
                   status_id = 2 if status_id == 1
