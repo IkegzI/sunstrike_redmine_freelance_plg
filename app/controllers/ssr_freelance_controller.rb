@@ -71,7 +71,6 @@ class SsrFreelanceController < ApplicationController
       user_pay_wallet = user.custom_values.find_by(custom_field_id: custom_field_wallet.id) || ''
       user_pay_type = user.custom_values.find_by(custom_field_id: custom_field_type.id) || ''
     end
-    # binding.pry
     if project
       role_ids_custom = SsrFreelanceSetting.all.map { |item| item.role_id }.compact
       check = (Member.where(user_id: user.id).find_by(project_id: project.id).role_ids.map { |item| true if role_ids_custom.include?(item) }).compact

@@ -245,7 +245,6 @@ module SsrFreelance
             custom_field_values.each do |item|
               if item.custom_field.id == id_cash
                 if item.value.to_f > 0
-                  binding.pry
                    issue.status = 2 if status_id == 1
                   a = ''
                 end
