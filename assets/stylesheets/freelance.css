@@ -16,3 +16,20 @@
 .field_with_errors input{
     border: 1px solid red !important;
 }
+.plitka{
+    padding: 10px;
+    border: 3px;
+    border-style: outset;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #F0F0F0;
+}
+.plitka_dop{
+    margin-top: 10px;
+    padding: 10px;
+    border: 3px;
+    border-style: ridge outset outset ridge;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #F0F0F0;
+}

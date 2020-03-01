@@ -239,18 +239,19 @@ module SsrFreelance
             check
           end
 
-          # def freelance_change_status_in_work
-          #   #sunstrike_freelance_field_accrued
-          #   id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
-          #   custom_field_values.each do |item|
-          #     if item.custom_field.id == id_cash
-          #       if item.value.to_f > 0
-          #         status_id = 2 if status_id == 1
-          #         a = ''
-          #       end
-          #     end
-          #   end
-          # end
+          def freelance_change_status_in_work
+            #sunstrike_freelance_field_accrued
+            id_cash = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+            custom_field_values.each do |item|
+              if item.custom_field.id == id_cash
+                if item.value.to_f > 0
+                  binding.pry
+                   issue.status = 2 if status_id == 1
+                  a = ''
+                end
+              end
+            end
+          end
           #
           def freelance_change_status_in_work
             #sunstrike_freelance_field_accrued
@@ -292,7 +293,7 @@ module SsrFreelance
           # нельзя заполнить “Фриланс (выплачено)” если параметр “Фриланс (начислено)” пустой
           #settings_sunstrike_freelance_field_status
           errors.add :base, :status_to_check_payment if freelance_check_cash_payment and freelance_status_on
-          # freelance_change_status_in_work if errors.keys.size == 0
+          freelance_change_status_in_work if errors.keys.size == 0
         end
       end
     end
