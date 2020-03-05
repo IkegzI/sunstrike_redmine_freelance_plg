@@ -36,6 +36,7 @@ module SsrFreelance
           #
           #
           check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+
           data[:issue].custom_field_values.each do |item|
             if check_pay_info == item.custom_field.id
               if item.value.to_f > 0
@@ -44,23 +45,15 @@ module SsrFreelance
                 end
               end
             end
+
             if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
               if item.value == '0'
                 item.value = '1'
+                data[:issue].errors.add  :base, :stop_change_field
               end
             end
           end
 
-          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued']
-          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid']
-          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status']
-          # Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id']
-
-
-        end
-        def controller_issues_before_save_dry(data)
-
-          controller_issues_save_dry(data)
         end
 
         def controller_issues_new_before_save(data = {})
@@ -75,18 +68,21 @@ module SsrFreelance
         #
         #
 
-        def controller_issues_bulk_edit_before_save(data={})
+        def controller_issues_bulk_edit_before_save(data = {})
           check = false
-          role_ids = data[:project].users.find(data[:issue].assigned_to_id).roles.ids
-          role_ids.each do |item|
-            if SsrFreelanceSetting.where(role_id: item) != []
-              check = true
+          if data[:issue].assigned_to_id
+            role_ids = data[:project].users.find(data[:issue].assigned_to_id).roles.ids
+            role_ids.each do |item|
+              if SsrFreelanceSetting.where(role_id: item) != []
+                check = true
+              end
             end
-          end
-          if check
-            data[:issue].custom_field_values.each do |item|
-              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-                item.value = 1
+            if check
+              data[:issue].custom_field_values.each do |item|
+                if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == 0
+                  item.value_was = 0 if item.value == 0
+                  item.value = 1
+                end
               end
             end
           end
