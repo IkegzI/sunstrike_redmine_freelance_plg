@@ -72,15 +72,19 @@ module SsrFreelance
                 item
               end
             end).compact
+            binding.pry
             if cf.first.value == '0' and assigned_to
               project_role_ids = Member.where(user_id: assigned_to.id).find_by(project_id: project.id).role_ids
               freelance_rol_ids = SsrFreelanceSetting.all.map { |item| item.role_id }
               ch = freelance_rol_ids.map { |item| true if project_role_ids.include?(item) }.compact.uniq.pop
+              binding.pry
               if ch
                 check = true
               end
             end
             check
+            binding.pry
+
           end
 
           # параметр “Фриланс (начислено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
