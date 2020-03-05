@@ -55,9 +55,10 @@ module SsrFreelance
             fields_ids = SsrFreelanceHelper.mark_custom_field_freelance.map { |item| item.last }
             binding.pry
             custom_field_values.map do |item|
+              binding.pry
               if fields_ids.include?(item.custom_field.id)
                 if item.value.to_i > 0 or item.value.scan(/[а-яА-Яa-zA-Z]+/).size > 0
-                  binding.pry
+
                   check = true
                 end
               end
