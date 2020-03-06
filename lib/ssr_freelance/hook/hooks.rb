@@ -87,16 +87,23 @@ module SsrFreelance
               end
             end
           end
+          data[:issue] = change_value_if_status(data[:issue])
+        end
+
+        private
+
+        # автоматический расчёт и поставновка суммы в поле Фриланс (Выплачено)
+        def change_value_if_status(data)
           data_cf = {
-          accurued_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i,
-          accurued_value: '',
+              accurued_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i,
+              accurued_value: '',
 
-          status_payment_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i,
-          status_payment_value: '',
-          status_payment_was_value: '',
+              status_payment_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i,
+              status_payment_value: '',
+              status_payment_was_value: '',
 
-          paid_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i,
-          paid_value: ''
+              paid_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i,
+              paid_value: ''
           }
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == data_cf[:accurued_id]
@@ -122,8 +129,9 @@ module SsrFreelance
               data[:issue].custom_field_values.each{|item| item.value = data_cf[:accurued_value] if item.custom_field.id == data_cf[:paid_id]}
             end
           end
-
+          data[:issue]
         end
+
 
       end
     end
