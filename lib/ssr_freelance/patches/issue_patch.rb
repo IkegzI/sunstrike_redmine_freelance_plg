@@ -56,7 +56,6 @@ module SsrFreelance
             custom_field_values.map do |item|
               if fields_ids.include?(item.custom_field.id)
                 if item.value.to_i > 0 or item.value.scan(/[а-яА-Яa-zA-Z]+/).size > 0
-
                   check = true
                 end
               end

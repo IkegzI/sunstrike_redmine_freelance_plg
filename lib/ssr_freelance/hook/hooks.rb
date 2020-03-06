@@ -80,18 +80,25 @@ module SsrFreelance
             end
             if check
               data[:issue].custom_field_values.each do |item|
-                if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == 0
-                  item.value_was = 0 if item.value == 0
-                  item.value = 1
+                if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == '0'
+                  item.value_was = '0' if item.value == '0'
+                  item.value = '1'
                 end
+                item = payment_info_add(item, data[:issue].assigned_to_id)
+              end
+            else
+              data[:issue].custom_field_values.each do |item|
+                item =  payment_info_destroy(item)
               end
             end
             data[:issue] = change_value_if_status(data[:issue])
-          else
+          elsif data[:issue].assigned_to_id.nil?
             data[:issue].custom_field_values.each do |item|
-              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == 0
-                item.value = 0
+              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+                data[:issue].validate
+                item.value = '0'
               end
+              item = payment_info_destroy(item)
             end
           end
         end
@@ -136,6 +143,27 @@ module SsrFreelance
             end
           end
           issue
+        end
+
+        #удаление реквизитов оплаты
+        def payment_info_destroy(item)
+          if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i
+            item.value = ''
+          end
+          if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i
+            item.value = ''
+          end
+        end
+
+        #добавление реквизитов оплаты
+        def payment_info_add(item, usr)
+          if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i
+            item.value = User.find(usr).custom_field_values.map{|i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i}.compact.first
+          end
+          if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i
+            item.value = User.find(usr).custom_field_values.map{|i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i}.compact.first
+          end
+          item
         end
 
       end
