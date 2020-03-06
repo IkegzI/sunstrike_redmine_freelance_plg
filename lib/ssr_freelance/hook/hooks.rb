@@ -86,8 +86,14 @@ module SsrFreelance
                 end
               end
             end
+            data[:issue] = change_value_if_status(data[:issue])
+          else
+            data[:issue].custom_field_values.each do |item|
+              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == 0
+                item.value = 0
+              end
+            end
           end
-          data[:issue] = change_value_if_status(data[:issue])
         end
 
         private
@@ -120,18 +126,17 @@ module SsrFreelance
 
           if data_cf[:status_payment_was_value] == "Надо оплатить аванс" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50']
             if data_cf[:paid_value] <= 0 and data_cf[:accurued_value] > 0
-              issue.custom_field_values.each{|item| item.value = data_cf[:accurued_value] * 0.5 if item.custom_field.id == data_cf[:paid_id]}
+              issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] * 0.5 if item.custom_field.id == data_cf[:paid_id] }
             end
           end
 
           if data_cf[:status_payment_was_value] == "Надо оплатить все" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100']
-            if (data_cf[:accurued_value] > 0 and data_cf[:paid_value] <  data_cf[:accurued_value]) and data_cf[:accurued_value] > 0
-              issue.custom_field_values.each{|item| item.value = data_cf[:accurued_value] if item.custom_field.id == data_cf[:paid_id]}
+            if (data_cf[:accurued_value] > 0 and data_cf[:paid_value] < data_cf[:accurued_value]) and data_cf[:accurued_value] > 0
+              issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] if item.custom_field.id == data_cf[:paid_id] }
             end
           end
           issue
         end
-
 
       end
     end
