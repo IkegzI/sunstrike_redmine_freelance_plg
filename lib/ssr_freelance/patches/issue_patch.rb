@@ -63,7 +63,6 @@ module SsrFreelance
             check
           end
 
-
           def freelance_role_check # yes
             id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
             check = false
@@ -125,7 +124,7 @@ module SsrFreelance
             if check_select
               custom_field_values.each do |item|
                 if item.custom_field.id == value_pay_id
-                  if item.value.to_i <= 0
+                  if item.value.to_f <= 0
                     check = true
                   end
                 end
@@ -225,6 +224,7 @@ module SsrFreelance
 
           # Назначено - пустое значение
           errors.add :base, :assigned_to_nil if assigned_to_nil and freelance_check_complete_fields
+          errors.add :base, :assigned_nil_status_on if assigned_to_nil and freelance_status_on
 
           # параметр “Фриланс (начислено)” пустой, равен нулю или меньше нуля, система должна выдать ошибку при попытке сохранить любое из значений в поле “Фриланс статус” кроме пустого
           #settings_sunstrike_freelance_field_status

@@ -79,25 +79,19 @@ module SsrFreelance
               end
             end
             if check
-              data[:issue].custom_field_values.each do |item|
-                if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == '0'
-                  item.value_was = '0' if item.value == '0'
-                  item.value = '1'
-                end
-                item = payment_info_add(item, data[:issue].assigned_to_id)
-              end
+             data = change_status(data)
             else
               data[:issue].custom_field_values.each do |item|
-                item =  payment_info_destroy(item)
+                item = payment_info_destroy(item)
               end
             end
             data[:issue] = change_value_if_status(data[:issue])
           elsif data[:issue].assigned_to_id.nil?
             data[:issue].custom_field_values.each do |item|
-              if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-                data[:issue].validate
-                item.value = '0'
-              end
+              # if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+              #   data[:issue].validate
+              #   item.value = '0'
+              # end
               item = payment_info_destroy(item)
             end
           end
@@ -108,6 +102,8 @@ module SsrFreelance
         # автоматический расчёт и поставновка суммы в поле Фриланс (Выплачено)
         def change_value_if_status(issue)
           data_cf = {
+              status_freelance: '',
+              status_freelance_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i,
               accurued_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i,
               accurued_value: '',
 
@@ -119,6 +115,9 @@ module SsrFreelance
               paid_value: ''
           }
           issue.custom_field_values.each do |item|
+            if item.custom_field.id == data_cf[:status_freelance_id]
+              data_cf[:status_freelance] = item.value.to_i
+            end
             if item.custom_field.id == data_cf[:accurued_id]
               data_cf[:accurued_value] = item.value.to_f
             end
@@ -130,16 +129,17 @@ module SsrFreelance
               data_cf[:paid_value] = item.value.to_f
             end
           end
-
-          if data_cf[:status_payment_was_value] == "Надо оплатить аванс" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50']
-            if data_cf[:paid_value] <= 0 and data_cf[:accurued_value] > 0
-              issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] * 0.5 if item.custom_field.id == data_cf[:paid_id] }
+          if data_cf[:status_freelance] == 1
+            if data_cf[:status_payment_was_value] == "Надо оплатить аванс" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_50']
+              if data_cf[:paid_value] <= 0 and data_cf[:accurued_value] > 0
+                issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] * 0.5 if item.custom_field.id == data_cf[:paid_id] }
+              end
             end
-          end
 
-          if data_cf[:status_payment_was_value] == "Надо оплатить все" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100']
-            if (data_cf[:accurued_value] > 0 and data_cf[:paid_value] < data_cf[:accurued_value]) and data_cf[:accurued_value] > 0
-              issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] if item.custom_field.id == data_cf[:paid_id] }
+            if data_cf[:status_payment_was_value] == "Надо оплатить все" and data_cf[:status_payment_value] == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status_100']
+              if (data_cf[:accurued_value] > 0 and data_cf[:paid_value] < data_cf[:accurued_value]) and data_cf[:accurued_value] > 0
+                issue.custom_field_values.each { |item| item.value = data_cf[:accurued_value] if item.custom_field.id == data_cf[:paid_id] }
+              end
             end
           end
           issue
@@ -158,13 +158,28 @@ module SsrFreelance
         #добавление реквизитов оплаты
         def payment_info_add(item, usr)
           if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i
-            item.value = User.find(usr).custom_field_values.map{|i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i}.compact.first
+            item.value = User.find(usr).custom_field_values.map { |i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_user_field_id'].to_i }.compact.first
           end
           if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_issue_field_id'].to_i
-            item.value = User.find(usr).custom_field_values.map{|i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i}.compact.first
+            item.value = User.find(usr).custom_field_values.map { |i| i.value if i.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_wallet_user_field_id'].to_i }.compact.first
           end
           item
         end
+
+        #автоматическое изменнения значения
+        def change_status(data)
+          data[:issue].custom_field_values.each do |item|
+            if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == '0'
+              unless item.value == '0' and item.value_was == '1'
+                item.value_was = '0' if item.value == '0'
+                item.value = '1'
+              end
+            end
+            item = payment_info_add(item, data[:issue].assigned_to_id)
+          end
+          data
+        end
+
 
       end
     end
