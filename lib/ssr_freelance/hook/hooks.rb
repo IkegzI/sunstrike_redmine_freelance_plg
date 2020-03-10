@@ -84,16 +84,11 @@ module SsrFreelance
               data[:issue].custom_field_values.each do |item|
                 item = payment_info_destroy(item)
               end
+              data = change_status_off(data) unless fields_contain_data(data[:issue])
             end
             data[:issue] = change_value_if_status(data[:issue])
           elsif data[:issue].assigned_to_id.nil?
-            data[:issue].custom_field_values.each do |item|
-              # if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-              #   data[:issue].validate
-              #   item.value = '0'
-              # end
-              item = payment_info_destroy(item)
-            end
+              data = change_status_off(data)
           end
         end
 
@@ -145,6 +140,30 @@ module SsrFreelance
           issue
         end
 
+        def fields_contain_data(issue)
+          data_cf = {
+              accurued_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i,
+
+              status_payment_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'].to_i,
+
+              paid_id: Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'].to_i
+          }
+          check = false
+          issue.custom_field_values.each do |item|
+
+            if item.custom_field.id == data_cf[:accurued_id]
+              check = true if item.value.to_f > 0
+            end
+            if item.custom_field.id == data_cf[:status_payment_id]
+              check = true if item.value.scan(/[а-яА-Яa-zA-Z]+/).size > 0
+            end
+            if item.custom_field.id == data_cf[:paid_id]
+              check = true if item.value.to_f > 0
+            end
+          end
+          check
+        end
+
         #удаление реквизитов оплаты
         def payment_info_destroy(item)
           if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_pay_issue_field_id'].to_i
@@ -176,6 +195,17 @@ module SsrFreelance
               end
             end
             item = payment_info_add(item, data[:issue].assigned_to_id)
+          end
+          data
+        end
+
+        def change_status_off(data)
+          data[:issue].custom_field_values.each do |item|
+            if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+              data[:issue].validate
+              item.value = '0'
+            end
+            item = payment_info_destroy(item)
           end
           data
         end
