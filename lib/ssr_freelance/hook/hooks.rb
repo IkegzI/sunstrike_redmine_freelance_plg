@@ -87,8 +87,8 @@ module SsrFreelance
               data = change_status_off(data) unless fields_contain_data(data[:issue])
             end
             data[:issue] = change_value_if_status(data[:issue])
-          # elsif data[:issue].assigned_to_id.nil?
-          #     data = change_status_off(data)
+          elsif data[:issue].assigned_to_id.nil?
+              data = change_status_off(data) unless fields_contain_data(data[:issue])
           end
         end
 
