@@ -19,7 +19,6 @@ module SsrFreelance
 
         def controller_issues_save_dry(data = {})
           first_def(data)
-
           if data[:issue].validate
             check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
             data[:issue].custom_field_values.each do |item|
@@ -76,7 +75,6 @@ module SsrFreelance
 
         def controller_issues_bulk_edit_before_save(data = {})
           first_def(data)
-
         end
 
         private
@@ -113,7 +111,9 @@ module SsrFreelance
               end
               data = change_status_off(data) unless fields_contain_data(data[:issue])
             end
+
             data[:issue] = change_value_if_status(data[:issue])
+
           elsif data[:issue].assigned_to_id.nil?
             data = change_status_off(data) unless fields_contain_data(data[:issue])
           end
@@ -129,6 +129,7 @@ module SsrFreelance
                 end
               end
             end
+
           end
 
         end
@@ -229,10 +230,8 @@ module SsrFreelance
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == '0'
               unless item.value == '0' and item.value_was == '1'
-                if data[:issue].validate
-                  item.value_was = '0' if item.value == '0'
-                  item.value = '1' if data[:issue].validate
-                end
+                item.value_was = '0' if item.value == '0'
+                item.value = '1'
               end
             end
             item = payment_info_add(item, data[:issue].assigned_to_id)
@@ -244,7 +243,7 @@ module SsrFreelance
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
               if data[:issue].validate
-                item.value = '0'
+                item.value = '0' if item.value_was == '1'
               end
             end
             item = payment_info_destroy(item)
