@@ -229,8 +229,10 @@ module SsrFreelance
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i and item.value == '0'
               unless item.value == '0' and item.value_was == '1'
-                item.value_was = '0' if item.value == '0'
-                item.value = '1'
+                if data[:issue].validate
+                  item.value_was = '0' if item.value == '0'
+                  item.value = '1' if data[:issue].validate
+                end
               end
             end
             item = payment_info_add(item, data[:issue].assigned_to_id)
@@ -241,8 +243,9 @@ module SsrFreelance
         def change_status_off(data)
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-              data[:issue].validate
-              item.value = '0'
+              if data[:issue].validate
+                item.value = '0'
+              end
             end
             item = payment_info_destroy(item)
           end

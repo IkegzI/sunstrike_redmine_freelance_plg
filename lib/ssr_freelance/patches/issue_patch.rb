@@ -228,6 +228,7 @@ module SsrFreelance
           #settings_sunstrike_freelance_field_status
           errors.add :base, :status_to_check_payment if freelance_check_cash_payment and freelance_status_on
           errors.add :base, :status_to_check_status_issue if freelance_change_status_in_work
+
         end
       end
     end
