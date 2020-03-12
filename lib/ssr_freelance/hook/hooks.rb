@@ -18,41 +18,47 @@ module SsrFreelance
         include SsrFreelanceHelper
 
         def controller_issues_save_dry(data = {})
+          first_def(data)
 
-          project = data[:issue].project
-          if project and data[:issue].assigned_to
-            user_id = data[:issue].assigned_to.id
-            if user_id
-              begin
-                role_user_ids = Member.where(user_id: user_id).find_by(project_id: project.id).role_ids
-              rescue
-                role_user_ids = []
-              end
-            end
-          else
-            role_user_ids = data[:issue].assigned_to.roles.ids if data[:issue].assigned_to
-          end
-          check = SsrFreelanceSetting.all.map { |item| true if role_user_ids.include?(item.role_id) }.compact.pop if data[:issue].assigned_to
-          #
-          #
-          check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
-
-          data[:issue].custom_field_values.each do |item|
-            if check_pay_info == item.custom_field.id
-              if item.value.to_f > 0
-                if data[:issue].status_id == 1
-                  data[:issue].status_id = 2
+          if data[:issue].validate
+            check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+            data[:issue].custom_field_values.each do |item|
+              if check_pay_info == item.custom_field.id
+                if item.value.to_f > 0
+                  if data[:issue].status_id == 1 and Issue.find(data[:issue].id).status_id == 1
+                    data[:issue].status_id = 2
+                  end
                 end
               end
             end
-
-            if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-              if item.value == '0'
-                item.value = '1'
-                data[:issue].errors.add :base, :stop_change_field
-              end
-            end
           end
+
+          # project = data[:issue].project
+          # if project and data[:issue].assigned_to
+          #   user_id = data[:issue].assigned_to.id
+          #   if user_id
+          #     begin
+          #       role_user_ids = Member.where(user_id: user_id).find_by(project_id: project.id).role_ids
+          #     rescue
+          #       role_user_ids = []
+          #     end
+          #   end
+          # else
+          #   role_user_ids = data[:issue].assigned_to.roles.ids if data[:issue].assigned_to
+          # end
+          # check = SsrFreelanceSetting.all.map { |item| true if role_user_ids.include?(item.role_id) }.compact.pop if data[:issue].assigned_to
+          # #
+          # #
+          # check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+          #
+          #
+          #   if check and item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
+          #     if item.value == '0'
+          #       item.value = '1'
+          #       data[:issue].errors.add :base, :stop_change_field
+          #     end
+          #   end
+          # end
 
         end
 
@@ -69,17 +75,38 @@ module SsrFreelance
         #
 
         def controller_issues_bulk_edit_before_save(data = {})
+          first_def(data)
 
+        end
+
+        private
+
+        #основы
+        def first_def(data)
           check = false
-          if data[:issue].assigned_to_id
-            role_ids = data[:project].users.find(data[:issue].assigned_to_id).roles.ids
+          if data[:issue].assigned_to_id and data[:issue].project
+            project = data[:issue].project
+            if project and data[:issue].assigned_to
+              user_id = data[:issue].assigned_to.id
+              if user_id
+                begin
+                  role_ids = Member.where(user_id: user_id).find_by(project_id: project.id).role_ids
+                rescue
+                  role_ids = []
+                end
+              end
+            else
+              role_ids = data[:issue].assigned_to.roles.ids if data[:issue].assigned_to
+            end
+
+            # role_ids = data[:issue].project.users.find(data[:issue].assigned_to_id).roles.ids
             role_ids.each do |item|
               if SsrFreelanceSetting.where(role_id: item) != []
                 check = true
               end
             end
             if check
-             data = change_status(data)
+              data = change_status(data)
             else
               data[:issue].custom_field_values.each do |item|
                 item = payment_info_destroy(item)
@@ -88,11 +115,23 @@ module SsrFreelance
             end
             data[:issue] = change_value_if_status(data[:issue])
           elsif data[:issue].assigned_to_id.nil?
-              data = change_status_off(data) unless fields_contain_data(data[:issue])
+            data = change_status_off(data) unless fields_contain_data(data[:issue])
           end
-        end
 
-        private
+          if data[:issue].validate
+            check_pay_info = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'].to_i
+            data[:issue].custom_field_values.each do |item|
+              if check_pay_info == item.custom_field.id
+                if item.value.to_f > 0
+                  if data[:issue].status_id == 1 and Issue.find(data[:issue].id).status_id == 1
+                    data[:issue].status_id = 2
+                  end
+                end
+              end
+            end
+          end
+
+        end
 
         # автоматический расчёт и поставновка суммы в поле Фриланс (Выплачено)
         def change_value_if_status(issue)
