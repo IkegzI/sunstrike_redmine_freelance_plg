@@ -22,7 +22,7 @@ module SsrFreelance
           #поле ассоциирующее не изменилось
 
 
-          def freelance_role_check_turn_off # yes
+          def freelance_role_check_off # yes
             check = false
             id_field_freelance = Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
             cf = (custom_field_values.map do |item|
@@ -203,9 +203,10 @@ module SsrFreelance
           #freelance
           #Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус”
           # роль - фрилансер, изменяем ассоциирующее поле stop_change_complete_field
+          binding.pry
           errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
-          errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_turn_off and !(freelance_role_check_change_turn_off)
+          errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_off and !freelance_role_check_change_turn_off
 
           #stop_change_field: "Тикет назначен на пользователя, работающего на фрилансе. Нельзя в поле 'Делает фрилансер' установить значение 'Нет'"
           #пользователь - фрилансер               #не изменилось, значение нет
