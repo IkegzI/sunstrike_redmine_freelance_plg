@@ -115,6 +115,7 @@ module SsrFreelance
             data[:issue] = change_value_if_status(data[:issue])
 
           elsif data[:issue].assigned_to_id.nil?
+            change_status_off(data)
             data = change_status_off(data) unless fields_contain_data(data[:issue])
           end
 
@@ -242,9 +243,8 @@ module SsrFreelance
         def change_status_off(data)
           data[:issue].custom_field_values.each do |item|
             if item.custom_field.id == Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'].to_i
-              if data[:issue].validate
-                item.value = '0' if item.value_was == '1'
-              end
+              assign = data[:issue].assigned_to_id != Issue.find(data[:issue].id).assigned_to_id
+                item.value = '0' if (item.value_was == '1' and data[:issue].assigned_to_id.nil?) or (fields_contain_data(data[:issue]) and assign)
             end
             item = payment_info_destroy(item)
           end
