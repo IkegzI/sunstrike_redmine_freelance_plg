@@ -68,7 +68,6 @@
                             if (document.getElementById('update') != null) {
                                 bang = document.getElementById('update').getAttribute('style')
                             }
-                            console.log(data);
                             if (data == '1') {
                                 document.getElementById(number_field).value = '1';
                                 document.getElementById(number_field).setAttribute('editing', 'no');
@@ -77,45 +76,39 @@
 
                             } else {
                                 if (data == '2') {
-<!--                                    var check = true;-->
+                                    var check = true;
                                     // статус
-<!--                                    var number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'] %>';-->
-<!--                                    var number_field_status = 'issue_custom_field_values_' + number_field_ch;-->
-<!--                                    console.log(number_field_status);-->
+                                    var number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'] %>';
+                                    var number_field_status = 'issue_custom_field_values_' + number_field_ch;
 
-<!--                                    console.log(number_field_status + " " + document.getElementById(number_field_status).value);-->
-<!--                                    if (Number(document.getElementById(number_field_status).value) > 0) {-->
-<!--                                        check = false;-->
-<!--                                    }-->
+                                    if (Number(document.getElementById(number_field_status).value) > 0) {
+                                        check = false;
+                                    }
                                     // начислено
-<!--                                    number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'] %>';-->
-<!--                                    var number_field_cash_accrued = 'issue_custom_field_values_' + number_field_ch;-->
-<!--                                    console.log(number_field_cash_accrued + " " + document.getElementById(number_field_cash_accrued).value);-->
-
-<!--                                    if (Number(document.getElementById(number_field_cash_accrued).value) > 0) {-->
-<!--                                        check = false;-->
-<!--                                    }-->
+                                    number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_accrued'] %>';
+                                    var number_field_cash_accrued = 'issue_custom_field_values_' + number_field_ch;
+                                    if (Number(document.getElementById(number_field_cash_accrued).value) > 0) {
+                                        check = false;
+                                    }
 
                                     // выплачено
-<!--                                    number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'] %>';-->
-<!--                                    var number_field_cash_pay = 'issue_custom_field_values_' + number_field_ch;-->
-<!--                                    console.log(number_field_cash_pay + " " + document.getElementById(number_field_cash_pay).value);-->
+                                    number_field_ch = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_paid'] %>';
+                                    var number_field_cash_pay = 'issue_custom_field_values_' + number_field_ch;
 
-<!--                                    if (Number(document.getElementById(number_field_cash_pay).value) > 0) {-->
-<!--                                        check = false;-->
-<!--                                    }-->
-<!--                                    console.log(check);-->
-<!--                                    if (check) {-->
+                                    if (Number(document.getElementById(number_field_cash_pay).value) > 0) {
+                                        check = false;
+                                    }
+                                    if (check) {
                                         document.getElementById(number_field).value = '0';
                                         document.getElementById(number_field).setAttribute('editing', 'yes');
                                         document.getElementById(number_field).removeAttribute('onchange');
                                         document.getElementById(number_field).removeAttribute('onmouseout');
-                                    // } else {
-                                    //     document.getElementById(number_field).value = '1';
-                                    //     document.getElementById(number_field).setAttribute('editing', 'yes');
-                                    //     document.getElementById(number_field).removeAttribute('onchange');
-                                    //     document.getElementById(number_field).removeAttribute('onmouseout');
-                                    // }
+                                    } else {
+                                        document.getElementById(number_field).value = '1';
+                                        document.getElementById(number_field).setAttribute('editing', 'yes');
+                                        document.getElementById(number_field).removeAttribute('onchange');
+                                        document.getElementById(number_field).removeAttribute('onmouseout');
+                                    }
                                 }
                                 if (data == '3') {
                                     document.getElementById(number_field).value = '1';
@@ -158,8 +151,6 @@
     function check_field_pay_method() {
         var field_id = 'issue_custom_field_values_' + <%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_status'] %>;
         var field = document.getElementById(field_id).value;
-        console.log('field_id = ' + field_id);
-        console.log('field = ' + field);
         if (document.getElementById(field_id).getAttribute('status_edit') == 'need_pay') {
             if (field == 'Выплачен аванс') {
                 check_pay_cash(field_id);
@@ -180,7 +171,6 @@
                 },
                 cache: false,
                 success: function (data) {
-                    console.log(data);
                     var number_field = '<%= Setting.plugin_sunstrike_redmine_freelance_plg['sunstrike_freelance_field_id'] %>';
                     // статус
                     var number_field_status = 'issue_custom_field_values_' + number_field;
