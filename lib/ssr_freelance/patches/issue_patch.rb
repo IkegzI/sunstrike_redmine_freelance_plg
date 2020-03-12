@@ -203,7 +203,6 @@ module SsrFreelance
           #freelance
           #Задачу больше делает не фрилансер? Чтобы изменить поле “Делает фрилансер” на “Нет” удалите информацию из полей “Фриланс (начислено)”, “Фриланс (выплачено)” и “Фриланс статус”
           # роль - фрилансер, изменяем ассоциирующее поле stop_change_complete_field
-          binding.pry
           errors.add :base, :stop_change_complete_field if freelance_check_complete_fields and freelance_role_check_change_turn_off and !(freelance_role_check) #freelance_check_off_complete_fields
 
           errors.add :base, :freelance_check_off_complete_fields if freelance_check_complete_fields and freelance_role_check_off and !freelance_role_check_change_turn_off
